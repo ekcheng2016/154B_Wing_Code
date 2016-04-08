@@ -16,7 +16,7 @@
 %   wx : force distribution in the x-direction  (N/m)
 %   wy : force distribution in the y-direction  (N/m)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [wx,wy] = calc_wxwy(name,n,rho,V,AoA,Cd,nz)
+function [wx,wy] = calc_wxwy(alt,name,n,rho,V,AoA,Cd,nz)
 load_aircraft_parameters;
 load_conversions;
 
@@ -33,13 +33,15 @@ l_rect = L/b.*ones(1,nz+1);
 l_ellip = (4*L/pi/b).*sqrt(1-(2*z./b).^2);
 l = (l_rect + l_ellip)./2;               % N/m
 
-figure()
+fig = figure();
 plot(z,l_ellip,z,l_rect,z,l,'Linewidth',2)
+xlim([0 b/2]);
 xlabel('z (m)','FontSize',12)
 ylabel('Lift Coefficients (N/m)','FontSize',12)
-title(['Lift Distribution Half-Span Profile: ', cellstr(name)],'FontSize',14);
+title([cellstr(alt) ' Lift Distribution Half-Span Profile: ', cellstr(name)],'FontSize',14);
 legend({'lift elliptic distribution','lift rectangular distribution','combined lift distribution'},...
     'FontSize',12,'location','west')
+saveas(fig,[pwd '/Lift_Distribution_Figures/' alt '_Lift Distribution Half Span Profile_' name{1} '.pdf']);
 
 % drag distribution
 %  Assume drag is constant, when it is 20% from the tip, drag increases by
@@ -54,9 +56,11 @@ wx = -sin(AoA).*l + cos(AoA).*d;
 
 % Note: wx and wy are defined from root to tip
 
-figure()
+fig = figure();
 plot(z,wy,z,wx,'linewidth',2)
+xlim([0 b/2]);
 xlabel('z (m)','FontSize',12)
 ylabel('Distributed Load (N/m)','FontSize',12)
-title(['Load Distribution Half-Span Profile: ', cellstr(name)],'FontSize',14);
+title([cellstr(alt) ' Load Distribution Half-Span Profile: ', cellstr(name)],'FontSize',14);
 legend({'w_y','w_x'},'FontSize',12)
+saveas(fig,[pwd '/Load_Distribution_Figures/' alt '_Load Distribution Half Span Profile_' name{1} '.pdf']);

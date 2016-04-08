@@ -46,7 +46,7 @@ for ii = 1:length(airfoil_data)
 end
 
 % Plot Cl vs. Alpha graph (airfoil)
-figure(1);
+fig = figure(1);
 hold on; grid on;
 plot(naca2415(1).alpha,naca2415(1).Cl,'--r');
 plot(naca2415(2).alpha,naca2415(2).Cl,'--k');
@@ -75,3 +75,4 @@ end
 legend({'Sea Level C_l','Ceiling C_l','Sea Level C_L','Ceiling C_L'},'FontSize',12,'Location','southeast');
 title('C_L vs. \alpha','FontSize',14);
 
+saveas(fig,[pwd '/Lift_Curve_Slope_Figure/NACA2415_LiftCurve_Figure.pdf']);
