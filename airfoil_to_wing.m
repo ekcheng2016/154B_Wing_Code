@@ -57,7 +57,7 @@ for ii = 1:length(airfoil_data)
     naca2415(ii).CL_alpha = naca2415(ii).Cl_alpha/(1+(naca2415(ii).Cl_alpha/(pi*AR*e)));
 
     %Calculate the 3D CL values
-    naca2415(ii).CL = naca2415(ii).CL_alpha*(naca2415(ii).alpha(naca2415(ii).minInd:naca2415(ii).maxInd)-naca2415(ii).alpha0);
+    naca2415(ii).CL = (naca2415(ii).CL_alpha/naca2415(ii).Cl_alpha)*naca2415(ii).Cl;
     
     % Calculate the max/min CL value (stall CL)
 %    naca2415(ii).CLmax = naca2415(ii).CL(end);
@@ -66,13 +66,13 @@ for ii = 1:length(airfoil_data)
     naca2415(ii).CLmin = (naca2415(ii).CL_alpha/naca2415(ii).Cl_alpha)*naca2415(ii).Clmin;
 
     if ii == 1
-        plot(naca2415(ii).alpha(naca2415(ii).minInd:naca2415(ii).maxInd),naca2415(ii).CL,'r','LineWidth',2);
+        plot(naca2415(ii).alpha,naca2415(ii).CL,'r','LineWidth',2);
     else
-        plot(naca2415(ii).alpha(naca2415(ii).minInd:naca2415(ii).maxInd),naca2415(ii).CL,'k','LineWidth',2);
+        plot(naca2415(ii).alpha,naca2415(ii).CL,'k','LineWidth',2);
     end
 end
 
 legend({'Sea Level C_l','Ceiling C_l','Sea Level C_L','Ceiling C_L'},'FontSize',12,'Location','southeast');
 title('C_L vs. \alpha','FontSize',14);
 
-saveas(fig,[pwd '/Lift_Curve_Slope_Figure/NACA2415_LiftCurve_Figure.pdf']);
+print(fig,[pwd '/Lift_Curve_Slope_Figure/NACA2415_LiftCurve_Figure'],'-djpeg');

@@ -17,8 +17,8 @@ calc_centroid_momentinertia;
 % SEA LEVEL Load Distributions
 % AT ALL CRITICAL CONDITIONS
 % NOTE:
-%   wx0 and wy0 here are defined from root to tip.
-%   wy and wx below are defined from tip to root.
+%  wx0 and wy0 here are defined from root to tip.
+%  wy and wx below are defined from tip to root.
 nz = 500;
 for ii = 1:length(n_allow_slvl.n)
     if ~isnan(n_allow_slvl.n(ii))

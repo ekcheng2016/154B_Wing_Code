@@ -34,15 +34,23 @@ l_ellip = (4*L/pi/b).*sqrt(1-(2*z./b).^2);
 l = (l_rect + l_ellip)./2;               % N/m
 
 fig = figure();
-plot(z,l_ellip,z,l_rect,z,l,'Linewidth',2)
-xlim([0 b/2]);
-xlabel('z (m)','FontSize',12)
-ylabel('Lift Coefficients (N/m)','FontSize',12)
-title([cellstr(alt) ' Lift Distribution Half-Span Profile: ', cellstr(name)],'FontSize',14);
-legend({'lift elliptic distribution','lift rectangular distribution','combined lift distribution'},...
-    'FontSize',12,'location','west')
-saveas(fig,[pwd '/Lift_Distribution_Figures/' alt '_Lift Distribution Half Span Profile_' name{1} '.pdf']);
-
+hold on;
+subplot(2,2,3)
+    hold on;
+    plot(z,l_ellip,'r',z,l_rect,'g','Linewidth',1)
+    plot(z,l,'Linewidth',2)
+    xlim([0 b/2]);
+    xlabel('z (m)','FontSize',9)
+    ylabel('Lift Distribution (N/m)','FontSize',9)
+    title('Lift Distribution Half-Span Profile:','FontSize',9);
+    if l(1) < 0
+        legend({'lift elliptic distribution','lift rectangular distribution','combined lift distribution'},...
+        'FontSize',8,'location','northwest')
+    else
+        legend({'lift elliptic distribution','lift rectangular distribution','combined lift distribution'},...
+        'FontSize',8,'location','southeast')
+    end
+    
 % drag distribution
 %  Assume drag is constant, when it is 20% from the tip, drag increases by
 %  10%
@@ -50,17 +58,27 @@ tmp = abs(z - (0.8*0.5*b));
 [val idx] = min(tmp);
 d = [D*ones(1,idx) 1.1*D*ones(1,length(z)-idx)]/b;
 
+subplot(2,2,4)
+    plot(z,d,'LineWidth',2)
+    xlim([0 b/2]);
+    xlabel('z (m)','FontSize',9)
+    ylabel('Drag Distribution (N/m)','FontSize',9)
+    title('Drag Distribution Half-Span Profile:','FontSize',9);
+    legend({'drag distribution'}, 'FontSize',8,'location','west');
+
 % rotate into x-y coordinate
 wy = cos(AoA).*l + sin(AoA).*d;
 wx = -sin(AoA).*l + cos(AoA).*d;
 
 % Note: wx and wy are defined from root to tip
 
-fig = figure();
-plot(z,wy,z,wx,'linewidth',2)
-xlim([0 b/2]);
-xlabel('z (m)','FontSize',12)
-ylabel('Distributed Load (N/m)','FontSize',12)
-title([cellstr(alt) ' Load Distribution Half-Span Profile: ', cellstr(name)],'FontSize',14);
-legend({'w_y','w_x'},'FontSize',12)
-saveas(fig,[pwd '/Load_Distribution_Figures/' alt '_Load Distribution Half Span Profile_' name{1} '.pdf']);
+subplot(2,2,1:2)
+    plot(z,wy,z,wx,'linewidth',2)
+    xlim([0 b/2]);
+    xlabel('z (m)','FontSize',9)
+    ylabel('Distributed Load (N/m)','FontSize',9)
+    title([' Load Distribution Half-Span Profile: ',cellstr([alt ' - ' name{1}])],'FontSize',9);
+    legend({'w_y','w_x'},'FontSize',8)
+pos = get(fig, 'position');
+set(fig,'position',[pos(1:2) pos(3:4)*2]);
+print(fig,[pwd '/Load_Distribution_Figures/' alt '_Load Distribution Half Span Profile_' name{1}],'-djpeg','-r300');

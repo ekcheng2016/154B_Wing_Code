@@ -3,8 +3,14 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [AoA,Cd] = find_n_conditions(n,V,rho,S,naca2415,wgt_max)
-    CL = (2*n*wgt_max)/(rho*V^2*S);
+    CL = (2*n*wgt_max)/(rho*V^2*S)
     
-    AoA = interp1(naca2415.CL,naca2415.alpha(naca2415.minInd:naca2415.maxInd),CL);
-    Cd  = interp1(naca2415.CL,naca2415.Cd(naca2415.minInd:naca2415.maxInd),CL);
+    tmp = abs(naca2415.CL-CL);
+    [idx idx] = min(tmp);
+    
+%    AoA = interp1(naca2415.CL,naca2415.alpha,CL,'linear');
+%    Cd  = interp1(naca2415.CL,naca2415.Cd,CL,'linear');
+
+    AoA = naca2415.alpha(idx);
+    Cd  = naca2415.Cd(idx);
 end

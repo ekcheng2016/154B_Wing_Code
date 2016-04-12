@@ -55,6 +55,7 @@ for i = 1:nz+1
 end
 
 fig = figure();
+hold on; grid on;
 subplot(2,3,1)
     plot(z,Mx0./1e3,'Linewidth',2)
     xlim([0 L])
@@ -65,6 +66,7 @@ subplot(2,3,2)
     xlim([0 L])
     xlabel('z (m)')
     ylabel('Shear Force S_y (kN)')
+    title([cellstr(alt) ' Shears, Moments and Load Distributions: ', cellstr(name)],'FontSize',14);
 subplot(2,3,3)
     plot(z,wy0./1e3,'Linewidth',2)
     xlim([0 L])
@@ -85,8 +87,9 @@ subplot(2,3,6)
     xlim([0 L])
     xlabel('z (m)')
     ylabel('Distributed Load w_x (kN/m)')
-
-saveas(fig,[pwd '/Load_Distribution_Figures/Shear_Moment_' alt '_' name{1} '.pdf']);
+pos = get(fig, 'position');
+set(fig,'position',[pos(1:2) pos(3:4)*2]);
+print(fig,[pwd '/Load_Distribution_Figures/Shear_Moment_' alt '_' name{1}],'-djpeg');
 
 shear_moment.Sx  = Sx_sum;
 shear_moment.Sy  = Sy_sum;

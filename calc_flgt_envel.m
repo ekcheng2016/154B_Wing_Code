@@ -99,7 +99,7 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
     xlabel('Velocity (m/s)','FontSize',12);   ylabel('Load Factor, n','FontSize',12);
     
     legend([p1,p2,p3],{'Maneuvering Loads','Gust Loads','Allowable Envelope'},'FontSize',12,'Location','northwest');
-    saveas(fig,[pwd '/Flight_Envelope_Figure/' text '_Flight_Envelope.pdf']);
+    print(fig,[pwd '/Flight_Envelope_Figure/' text '_Flight_Envelope'],'-djpeg');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%                   EXTRACT CRITICAL LOAD FACTORS                 %%%
