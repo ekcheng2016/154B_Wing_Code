@@ -14,7 +14,7 @@
 %   wy0:              y-load distribution root to tip (N/m)
 %
 % Outputs:
-%
+%   shear_moment:     structure containing the shear and moment profiles
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [shear_moment] = calc_shear_moments(alt,name,b,nz,wx,wy,wx0,wy0)
 
@@ -91,6 +91,7 @@ pos = get(fig, 'position');
 set(fig,'position',[pos(1:2) pos(3:4)*2]);
 print(fig,[pwd '/Load_Distribution_Figures/Shear_Moment_' alt '_' name{1}],'-djpeg');
 
+shear_moment.z   = z;
 shear_moment.Sx  = Sx_sum;
 shear_moment.Sy  = Sy_sum;
 shear_moment.Sx0 = Sx0;

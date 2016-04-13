@@ -36,7 +36,7 @@ l = (l_rect + l_ellip)./2;               % N/m
 fig = figure();
 hold on;
 subplot(2,2,3)
-    hold on;
+    hold on; box on;
     plot(z,l_ellip,'r',z,l_rect,'g','Linewidth',1)
     plot(z,l,'Linewidth',2)
     xlim([0 b/2]);
