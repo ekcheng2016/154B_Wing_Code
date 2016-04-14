@@ -20,7 +20,7 @@
 %   deflections :   structure containing deflection profile
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [deflections] = calc_deflections(alt,name,b,Ixx,Iyy,Ixy,Mx0,My0,nz,wx0,wy0)
+function [deflections] = calc_deflections(b,Ixx,Iyy,Ixy,Mx0,My0,nz,wx0,wy0)
 
     L = b/2;                % half span         m
     z = 0:L/nz:L;
@@ -49,24 +49,6 @@ function [deflections] = calc_deflections(alt,name,b,Ixx,Iyy,Ixy,Mx0,My0,nz,wx0,
         u_sum(i+1) = u_sum(i) + u(i+1);
         v_sum(i+1) = v_sum(i) + v(i+1);
     end
-    
-    fig = figure();
-    hold on; grid on;
-    subplot(1,2,1)
-        plot(z,u_sum*1000,'LineWidth',2);
-        xlim([0 L])
-        xlabel('z (m)')
-        ylabel('x-deflection (u) (mm)')
-        title('Wing Deflections for : ','FontSize',14);
-    subplot(1,2,2)
-        plot(z,v_sum*1000,'LineWidth',2);
-        xlim([0 L])
-        xlabel('z (m)')
-        ylabel('y-deflection (v) (mm)')
-        title([alt ' ' name{1}],'FontSize',14);
-    pos = get(fig,'position');
-    set(fig,'position',[pos(1:2) pos(3)*1.5 pos(4)]);
-    print(fig,[pwd '/Deflection_Figures/Deflection_' alt '_' name{1}],'-djpeg');
     
     deflections.z = z;
     deflections.u = u_sum;

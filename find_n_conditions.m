@@ -3,7 +3,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [AoA,Cd] = find_n_conditions(n,V,rho,S,naca2415,wgt_max)
-    CL = (2*n*wgt_max)/(rho*V^2*S)
+    CL = (2*n*wgt_max)/(rho*V^2*S);
     
     tmp = abs(naca2415.CL-CL);
     [idx idx] = min(tmp);

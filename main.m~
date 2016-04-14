@@ -182,13 +182,13 @@ figure(110);    xlabel('Span (m)');     ylabel('u deflection (mm)');
                 legend(uf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(u_fig,'position');
                 set(u_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(u_fig,[pwd '/Deflection_Figures/SLVL_u'],'-djpeg','-r300');
+                print(u_fig,[pwd '/Deflection_Figures/SLVL_u']);
                 
 figure(111);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 legend(vf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(v_fig,'position');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(v_fig,[pwd '/Deflection_Figures/SLVL_v'],'-djpeg','-r300');                
+                print(v_fig,[pwd '/Deflection_Figures/SLVL_v']);                
 
 % CEILING ALTITUDE Load Distributions
 % AT ALL CRITICAL CONDITIONS
@@ -295,70 +295,70 @@ figure(200);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/
                 print(lift_ellip_fig,[pwd '/Load_Distribution_Figures/CEIL_Lift_Elliptical'],'-djpeg','-r300');
                 
 figure(201);    xlabel('Span (m)');     ylabel('Rectangular Lift Distribution (N/m)');
-                legend(lrf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(lift_rect_fig,'position');
+                legend(lrf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(lift_rect_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(lift_rect_fig,[pwd '/Load_Distribution_Figures/CEIL_Lift_Rectangular'],'-djpeg','-r300');
                 
 figure(202);    xlabel('Span (m)');     ylabel('Lift Distribution (N/m)');
-                legend(lf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(lift_fig,'position');
+                legend(lf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(lift_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(lift_fig,[pwd '/Load_Distribution_Figures/CEIL_Lift_TTL'],'-djpeg','-r300');
+                print(lift_fig,[pwd '/Load_Distribution_Figures/SLVL_Lift_TTL'],'-djpeg','-r300');
                 
 figure(203);    xlabel('Span (m)');     ylabel('Drag Distribution (N/m)');
-                legend(df(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(drag_fig,'position');
+                legend(df(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(drag_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(drag_fig,[pwd '/Load_Distribution_Figures/CEIL_Drag'],'-djpeg','-r300');
+                print(drag_fig,[pwd '/Load_Distribution_Figures/SLVL_Drag'],'-djpeg','-r300');
                 
 figure(204);    xlabel('Span (m)');     ylabel('w_x Distribution (N/m)');
-                legend(wxf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(wx_fig,'position');
+                legend(wxf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(wx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(wx_fig,[pwd '/Load_Distribution_Figures/CEIL_wx'],'-djpeg','-r300');
+                print(wx_fig,[pwd '/Load_Distribution_Figures/SLVL_wx'],'-djpeg','-r300');
                 
 figure(205);    xlabel('Span (m)');     ylabel('w_y Distribution (N/m)');
-                legend(wyf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(wy_fig,'position');
+                legend(wyf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(wy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(wy_fig,[pwd '/Load_Distribution_Figures/CEIL_wy'],'-djpeg','-r300');
+                print(wy_fig,[pwd '/Load_Distribution_Figures/SLVL_wy'],'-djpeg','-r300');
 
 figure(206);    xlabel('Span (m)');     ylabel('S_x Distribution (N)');
-                legend(sxf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(sx_fig,'position');
+                legend(sxf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(sx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(sx_fig,[pwd '/Load_Distribution_Figures/CEIL_Sx'],'-djpeg','-r300');
+                print(sx_fig,[pwd '/Load_Distribution_Figures/SLVL_Sx'],'-djpeg','-r300');
                 
 figure(207);    xlabel('Span (m)');     ylabel('S_y Distribution (N)');
-                legend(syf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(sy_fig,'position');
+                legend(syf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(sy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(sy_fig,[pwd '/Load_Distribution_Figures/CEIL_Sy'],'-djpeg','-r300');
+                print(sy_fig,[pwd '/Load_Distribution_Figures/SLVL_Sy'],'-djpeg','-r300');
                 
 figure(208);    xlabel('Span (m)');     ylabel('M_x Distribution (Nm)');
-                legend(mxf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(mx_fig,'position');
+                legend(mxf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(mx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(mx_fig,[pwd '/Load_Distribution_Figures/CEIL_Mx'],'-djpeg','-r300');
+                print(mx_fig,[pwd '/Load_Distribution_Figures/SLVL_Mx'],'-djpeg','-r300');
                 
 figure(209);    xlabel('Span (m)');     ylabel('M_y Distribution (Nm)');
-                legend(myf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(my_fig,'position');
+                legend(myf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(my_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(my_fig,[pwd '/Load_Distribution_Figures/CEIL_My'],'-djpeg','-r300');
+                print(my_fig,[pwd '/Load_Distribution_Figures/SLVL_My'],'-djpeg','-r300');
 
 figure(210);    xlabel('Span (m)');     ylabel('u deflection (mm)');
-                legend(uf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(u_fig,'position');
+                legend(uf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(u_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(u_fig,[pwd '/Deflection_Figures/CEIL_u'],'-djpeg','-r300');
+                print(u_fig,[pwd '/Deflection_Figures/SLVL_u']);
                 
 figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
-                legend(vf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
-                title('Ceiling Altitude'); pos = get(v_fig,'position');
+                legend(vf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
+                title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(v_fig,[pwd '/Deflection_Figures/CEIL_v'],'-djpeg','-r300');
+                print(v_fig,[pwd '/Deflection_Figures/SLVL_v']);
 
 % TODO: airfoil section properties
 % A_cap = ;

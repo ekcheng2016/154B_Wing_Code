@@ -134,7 +134,7 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
 
     % NHAA LOAD FACTOR
     if(ngustneg_full(NHAA_ind) > nneg_full(NLAA_ind))
-        n_allow.name(3) = cellstr('NHAA');
+        n_allow.name(3) = cellstr('NHAA)');
         n_allow.n(3)    = nneg_full(NHAA_ind);
         [n_allow.AoA(3) n_allow.Cd(3)] = find_n_conditions(nneg_full(NHAA_ind),...
                             v_plot(NHAA_ind),rho,S,naca2415,wgt_max);    
@@ -153,7 +153,7 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
         [n_allow.AoA(4) n_allow.Cd(4)] = find_n_conditions(nneg_full(NLAA_ind),...
                             v_plot(NLAA_ind),rho,S,naca2415,wgt_max);    
     else
-        n_allow.name(4) = cellstr('V_{cruise} Gust Load');
+        n_allow.name(4) = cellstr('NLAA (Gust)');
         n_allow.n(4)    = ngustneg_full(NLAA_ind);
         [n_allow.AoA(4) n_allow.Cd(4)] = find_n_conditions(ngustneg_full(NLAA_ind),...
                             v_plot(NLAA_ind),rho,S,naca2415,wgt_max);    
@@ -162,12 +162,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
 
     % DIVE VELOCITY (NEGATIVE)
     if(ngustneg_full(end) > nneg_full(end))
-        n_allow.name(5) = cellstr('NLAA');
+        n_allow.name(5) = cellstr('V_{dive} Negative Load (Maneuver)');
         n_allow.n(5)    = nneg_full(end);
         [n_allow.AoA(5) n_allow.Cd(5)] = find_n_conditions(nneg_full(end),...
                     v_plot(end),rho,S,naca2415,wgt_max);    
     else
-        n_allow.name(5) = cellstr('V_{dive} Gust Load');
+        n_allow.name(5) = cellstr('V_{dive} Negative Load (Gust)');
         n_allow.n(5)    = ngustneg_full(end);
         [n_allow.AoA(5) n_allow.Cd(5)] = find_n_conditions(ngustneg_full(end),...
                     v_plot(end),rho,S,naca2415,wgt_max);    
@@ -177,12 +177,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
     % GUST LOAD @ CRUISE
     if((ngustpos_full(NLAA_ind) > npos_full(NLAA_ind)) && ...
             (NLAA_ind > PHAA_ind))
-        n_allow.name(6) = cellstr('V_{cruise} Gust Load');
+        n_allow.name(6) = cellstr('V_{cruise} Positive Load (Gust)');
         n_allow.n(6)    = ngustpos_full(NLAA_ind);
         [n_allow.AoA(6) n_allow.Cd(6)] = find_n_conditions(ngustpos_full(NLAA_ind),...
             v_plot(NLAA_ind),rho,S,naca2415,wgt_max);    
     else
-        n_allow.name(6) = cellstr('');
+        n_allow.name(6) = cellstr('No Gust Load @ V_{cruise}');
         n_allow.n(6)    = NaN;
         n_allow.AoA(6)  = NaN;
         n_allow.Cd(6)   = NaN;
