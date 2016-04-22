@@ -46,11 +46,13 @@ for ii = 1:length(airfoil_data)
 end
 
 % Plot Cl vs. Alpha graph (airfoil)
-fig = figure(1);
-hold on; grid on;
-plot(naca2415(1).alpha,naca2415(1).Cl,'--r');
-plot(naca2415(2).alpha,naca2415(2).Cl,'--k');
-xlabel('\alpha (rad)','FontSize',12); ylabel('Coefficient of Lift','FontSize',12);
+if PLOT_PREVIOUS
+    fig = figure(1);
+    hold on; grid on;
+    plot(naca2415(1).alpha,naca2415(1).Cl,'--r');
+    plot(naca2415(2).alpha,naca2415(2).Cl,'--k');
+    xlabel('\alpha (rad)','FontSize',12); ylabel('Coefficient of Lift','FontSize',12);
+end
 
 for ii = 1:length(airfoil_data)
     % Calculate the slope /rad --> CL_alpha
@@ -65,14 +67,18 @@ for ii = 1:length(airfoil_data)
     naca2415(ii).CLmax = (naca2415(ii).CL_alpha/naca2415(ii).Cl_alpha)*naca2415(ii).Clmax;
     naca2415(ii).CLmin = (naca2415(ii).CL_alpha/naca2415(ii).Cl_alpha)*naca2415(ii).Clmin;
 
-    if ii == 1
-        plot(naca2415(ii).alpha,naca2415(ii).CL,'r','LineWidth',2);
-    else
-        plot(naca2415(ii).alpha,naca2415(ii).CL,'k','LineWidth',2);
+    if PLOT_PREVIOUS
+        if ii == 1
+            plot(naca2415(ii).alpha,naca2415(ii).CL,'r','LineWidth',2);
+        else
+            plot(naca2415(ii).alpha,naca2415(ii).CL,'k','LineWidth',2);
+        end
     end
 end
 
-legend({'Sea Level C_l','Ceiling C_l','Sea Level C_L','Ceiling C_L'},'FontSize',12,'Location','southeast');
-title('C_L vs. \alpha','FontSize',14);
+if PLOT_PREVIOUS
+    legend({'Sea Level C_l','Ceiling C_l','Sea Level C_L','Ceiling C_L'},'FontSize',12,'Location','southeast');
+    title('C_L vs. \alpha','FontSize',14);
 
-print(fig,[pwd '/Lift_Curve_Slope_Figure/NACA2415_LiftCurve_Figure'],'-djpeg');
+    print(fig,[pwd '/Lift_Curve_Slope_Figure/NACA2415_LiftCurve_Figure'],'-djpeg');
+end

@@ -21,11 +21,13 @@ theta = 30*(pi/180);        % Angle of Trailing Edge    rad
 L1 = x2-x1;                 % Skin Length of Leading Edge
 L2 = (x3-x2)/cos(theta);    % Skin Length of Trailing Edge
 
+if PLOT_PREVIOUS
 fig = figure();
 hold on;
 xlabel('Chord Length (m)','FontSize',12); ylabel('Height (m)','FontSize',12);
 title('NACA 2415 Cross-Section','FontSize',14);
 axis([x1-2*t_spar x3+t_spar -0.4 0.1]);
+end 
 
 % CENTROID CALCULATION
 % Centroid of each element
@@ -36,6 +38,7 @@ Cy_spar1 = 0;
 Cy_spar2 = 0;
 Cy_spar3 = -(x3-x2)*tan(theta);
 
+if PLOT_PREVIOUS
 sp = line([Cx_spar1-(0.5*t_spar) Cx_spar1-(0.5*t_spar)],...
     [Cy_spar1-(0.5*h)+(0.5*t_skin) Cy_spar1+(0.5*h)-(0.5*t_skin)],'Color','g');
 line([Cx_spar1+(0.5*t_spar) Cx_spar1+(0.5*t_spar)],...
@@ -48,6 +51,7 @@ line([Cx_spar3-(0.5*t_spar) Cx_spar3-(0.5*t_spar)],...
     [Cy_spar3-(0.5*h) Cy_spar3+(0.5*h)],'Color','g');
 line([Cx_spar3+(0.5*t_spar) Cx_spar3+(0.5*t_spar)],...
     [Cy_spar3-(0.5*h) Cy_spar3+(0.5*h)],'Color','g');
+end
 
 Cx_skin1top = (x1+x2)/2;
 Cx_skin1bot = (x1+x2)/2;
@@ -58,6 +62,7 @@ Cy_skin1bot = -h/2;
 Cy_skin2top = -(x3-x2)/2*tan(theta) + h/2;
 Cy_skin2bot = -(x3-x2)/2*tan(theta) - h/2;
 
+if PLOT_PREVIOUS
 sk = line([Cx_skin1top-(0.5*L1)-(0.5*t_spar) Cx_skin1top-(0.5*L1)-(0.5*t_spar)],...
     [Cy_skin1top-(0.5*t_skin) Cy_skin1top+(0.5*t_skin)],'Color','b');
 line([Cx_skin1top+(0.5*L1)+(0.5*t_spar) Cx_skin1top+(0.5*L1)+(0.5*t_spar)],...
@@ -88,6 +93,7 @@ line([Cx_skin2bot-(0.5*(x3-x2))+(0.5*t_spar) Cx_skin2bot+(0.5*(x3-x2))+(0.5*t_sp
     [Cy_skin2bot+(0.5*L2*sin(theta))-(0.5*t_skin) Cy_skin2bot-(0.5*L2*sin(theta))-(0.5*t_skin)],'Color','b');
 legend([sp,sk],'Spars','Skins');
 print(fig, [pwd '/Airfoil_Section/Airfoil_Section'],'-djpeg');
+end
 %pause
 
 Cx_b1top = x1 + t_spar/2;
@@ -120,7 +126,7 @@ Cx = (Cx_spar1*A_spar + Cx_spar2*A_spar + Cx_spar3*A_spar + ...
     Cx_b2top*A_bracket + Cx_b2bot*A_bracket   + ...
     Cx_b3top*A_bracket + Cx_b3bot*A_bracket   + ...
     Cx_b4top*A_bracket + Cx_b4bot*A_bracket)  / ...
-    (3*A_spar + 2*A_skin1 + 2*A_skin2 + 8*A_bracket)
+    (3*A_spar + 2*A_skin1 + 2*A_skin2 + 8*A_bracket);
 
 Cy = (Cy_spar1*A_spar + Cy_spar2*A_spar + Cy_spar3*A_spar + ...
     Cy_skin1top*A_skin1 + Cy_skin1bot*A_skin1 + ...
@@ -129,16 +135,17 @@ Cy = (Cy_spar1*A_spar + Cy_spar2*A_spar + Cy_spar3*A_spar + ...
     Cy_b2top*A_bracket + Cy_b2bot*A_bracket   + ...
     Cy_b3top*A_bracket + Cy_b3bot*A_bracket   + ...
     Cy_b4top*A_bracket + Cy_b4bot*A_bracket)  / ...
-    (3*A_spar + 2*A_skin1 + 2*A_skin2 + 8*A_bracket)
+    (3*A_spar + 2*A_skin1 + 2*A_skin2 + 8*A_bracket);
 
 % add centroid to plot
+if PLOT_PREVIOUS
 scatter(Cx,Cy,'*r');
 text(Cx-0.1,Cy-0.02,['Overall Centroid: (' num2str(Cx,2) ',' num2str(Cy,2) ')'])
 pos = get(fig, 'position');
 set(fig,'position',[pos(1:2) pos(3)*2.5 pos(4)*0.5]);
 
 print(fig, [pwd '/Airfoil_Section/Airfoil_Section_w_Centroid'],'-djpeg');
-
+end
 
 % Area Moment of Inertia
 Ixx_spar1 = t_spar*h^3/12 + A_spar*(Cy_spar1 - Cy)^2;
