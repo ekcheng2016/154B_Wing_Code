@@ -2,6 +2,8 @@ clear all;
 close all; 
 clc;
 
+PLOT_PREVIOUS = 0; % set 1 to plot and save all previous plots
+
 clrstring = 'bgkrc';
 
 load_aircraft_parameters;
@@ -11,8 +13,8 @@ Re_sealvl = calc_Re(rho_sealvl,c,v_maneuver,mu_sealvl);
 Re_alceil = calc_Re(rho_altceil,c,v_maneuver,mu_altceil);
 
 airfoil_to_wing;
-n_allow_slvl = calc_flgt_envel(naca2415(1),rho_sealvl,'Sea Level')
-n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 feet)')
+n_allow_slvl = calc_flgt_envel(naca2415(1),rho_sealvl,'Sea Level',PLOT_PREVIOUS);
+n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 feet)',PLOT_PREVIOUS);
 
 calc_centroid_momentinertia;
 
@@ -42,6 +44,7 @@ for ii = 1:length(n_allow_slvl.n)
         end
         
         %PLOT DISTRIBUTIONS
+        if PLOT_PREVIOUS
         lift_ellip_fig = figure(100);
         hold on; box on; grid on;
         lef(ii) = plot(load_slvl(ii).z,load_slvl(ii).l_ellip,'Color',clrstring(ii),'linewidth',2);
@@ -71,7 +74,8 @@ for ii = 1:length(n_allow_slvl.n)
         hold on; box on; grid on;
         wyf(ii) = plot(load_slvl(ii).z,load_slvl(ii).wy0,'Color',clrstring(ii),'linewidth',2);
                   plot(-load_slvl(ii).z,load_slvl(ii).wy0,'Color',clrstring(ii),'linewidth',2);
-        
+        end
+                  
         % DETERMINE SHEARS AND MOMENTS          
         shear_moment_slvl(ii) = calc_shear_moments(b, nz, load_slvl(ii).wx,...
                                     load_slvl(ii).wy,...
@@ -79,6 +83,7 @@ for ii = 1:length(n_allow_slvl.n)
                                     load_slvl(ii).wy0);
         
         % PLOT
+        if PLOT_PREVIOUS
         sx_fig = figure(106);
         hold on; box on; grid on;
         sxf(ii) = plot(shear_moment_slvl(ii).z,shear_moment_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
@@ -98,14 +103,17 @@ for ii = 1:length(n_allow_slvl.n)
         hold on; box on; grid on;
         myf(ii) = plot(shear_moment_slvl(ii).z,shear_moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);
                   plot(-shear_moment_slvl(ii).z,shear_moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);        
-      
-      % DETERMINE DEFLECTIONS
-      deflection_slvl(ii) = calc_deflections(b, Ixx, Iyy, Ixy,...
+        end
+                  
+        % DETERMINE DEFLECTIONS
+        deflection_slvl(ii) = calc_deflections(b, Ixx, Iyy, Ixy,...
                                     shear_moment_slvl(ii).Mx0,...
                                     shear_moment_slvl(ii).My0,...
                                     nz,...
                                     load_slvl(ii).wx0,...
                                     load_slvl(ii).wy0);
+                                
+        if PLOT_PREVIOUS
         u_fig = figure(110);
         hold on; box on; grid on;
         uf(ii) = plot(deflection_slvl(ii).z,deflection_slvl(ii).u*1000,'Color',clrstring(ii),'linewidth',2);
@@ -115,9 +123,12 @@ for ii = 1:length(n_allow_slvl.n)
         hold on; box on; grid on;
         vf(ii) = plot(deflection_slvl(ii).z,deflection_slvl(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
                  plot(-deflection_slvl(ii).z,deflection_slvl(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
+        end
     end
 end
 
+
+if PLOT_PREVIOUS
 figure(100);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');
                 legend(lef(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(lift_ellip_fig,'position');
@@ -190,6 +201,9 @@ figure(111);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(v_fig,[pwd '/Deflection_Figures/SLVL_v'],'-djpeg','-r300');                
 
+end
+                
+                
 % CEILING ALTITUDE Load Distributions
 % AT ALL CRITICAL CONDITIONS
 for ii = 1:length(n_allow_ceil.n)
@@ -212,6 +226,7 @@ for ii = 1:length(n_allow_ceil.n)
         end
         
         %PLOT DISTRIBUTIONS
+        if PLOT_PREVIOUS
         lift_ellip_fig = figure(200);
         hold on; box on; grid on;
         lef(ii) = plot(load_ceil(ii).z,load_ceil(ii).l_ellip,'Color',clrstring(ii),'linewidth',2);
@@ -241,7 +256,8 @@ for ii = 1:length(n_allow_ceil.n)
         hold on; box on; grid on;
         wyf(ii) = plot(load_ceil(ii).z,load_ceil(ii).wy0,'Color',clrstring(ii),'linewidth',2);
                   plot(-load_ceil(ii).z,load_ceil(ii).wy0,'Color',clrstring(ii),'linewidth',2);
-        
+        end
+                  
         % DETERMINE SHEARS AND MOMENTS          
         shear_moment_ceil(ii) = calc_shear_moments(b, nz, load_ceil(ii).wx,...
                                     load_ceil(ii).wy,...
@@ -249,6 +265,7 @@ for ii = 1:length(n_allow_ceil.n)
                                     load_ceil(ii).wy0);
         
         % PLOT
+        if PLOT_PREVIOUS
         sx_fig = figure(206);
         hold on; box on; grid on;
         sxf(ii) = plot(shear_moment_ceil(ii).z,shear_moment_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
@@ -269,13 +286,17 @@ for ii = 1:length(n_allow_ceil.n)
         myf(ii) = plot(shear_moment_ceil(ii).z,shear_moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);
                   plot(-shear_moment_ceil(ii).z,shear_moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);        
       
-      % DETERMINE DEFLECTIONS
-      deflection_ceil(ii) = calc_deflections(b, Ixx, Iyy, Ixy,...
+        end
+        
+        % DETERMINE DEFLECTIONS
+        deflection_ceil(ii) = calc_deflections(b, Ixx, Iyy, Ixy,...
                                     shear_moment_ceil(ii).Mx0,...
                                     shear_moment_ceil(ii).My0,...
                                     nz,...
                                     load_ceil(ii).wx0,...
                                     load_ceil(ii).wy0);
+        
+        if PLOT_PREVIOUS
         u_fig = figure(210);
         hold on; box on; grid on;
         uf(ii) = plot(deflection_ceil(ii).z,deflection_ceil(ii).u*1000,'Color',clrstring(ii),'linewidth',2);
@@ -285,9 +306,11 @@ for ii = 1:length(n_allow_ceil.n)
         hold on; box on; grid on;
         vf(ii) = plot(deflection_ceil(ii).z,deflection_ceil(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
                  plot(-deflection_ceil(ii).z,deflection_ceil(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
+        end
     end
 end
 
+if PLOT_PREVIOUS
 figure(200);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');
                 legend(lef(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
@@ -360,6 +383,8 @@ figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(v_fig,[pwd '/Deflection_Figures/CEIL_v'],'-djpeg','-r300');
 
+end
+                
 % TODO: airfoil section properties
 % A_cap = ;
 % A_str = ;

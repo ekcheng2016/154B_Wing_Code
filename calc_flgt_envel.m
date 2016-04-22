@@ -2,7 +2,7 @@
 %
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
+function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
     load_aircraft_parameters;
     load_conversions;
     
@@ -77,29 +77,31 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%                     PLOT FLIGHT ENVELOPE                        %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    fig = figure();
-    grid on; hold on;
-    % FLIGHT ENVELOPE LINES
-    p1=plot(v_plot,npos_full,'b');
-    plot(v_plot,nneg_full,'b');
-    line([v_dive,v_dive],[n3,n1],'Color','b');
-    % GUST LOAD LINES
-    p2=plot(v_plot,ngustpos_full,'r');
-    plot(v_plot,ngustneg_full,'r',...
-         v_plot,ngustpos_dive_full,'r',v_plot,ngustneg_dive_full,'r');
-    % ALLOWABLE ENVELOPE LINES
-    p3=plot(v_plot(ind_1:end),npos_allow,'LineWidth',4,'Color','g');
-    line([v_plot(ind_1),v_plot(ind_1)],[0,n_pos(ind_1)],'LineWidth',4,'Color','g');
-    plot(v_plot(ind_neg1:end),nneg_allow,'LineWidth',4,'Color','g');
-    line([v_plot(ind_neg1),v_plot(ind_neg1)],[0,n_neg(ind_neg1)],'LineWidth',4,'Color','g');
-    line([v_plot(ind_1),v_plot(ind_neg1)],[0,0],'LineWidth',4,'Color','g');
-    line([v_dive,v_dive],[nneg_allow(end),n1],'LineWidth',4,'Color','g');
-    
-    title(['Flight Envelope: ' text],'FontSize',14);
-    xlabel('Velocity (m/s)','FontSize',12);   ylabel('Load Factor, n','FontSize',12);
-    
-    legend([p1,p2,p3],{'Maneuvering Loads','Gust Loads','Allowable Envelope'},'FontSize',12,'Location','northwest');
-    print(fig,[pwd '/Flight_Envelope_Figure/' text '_Flight_Envelope'],'-djpeg');
+    if plot_switch
+        fig = figure();
+        grid on; hold on;
+        % FLIGHT ENVELOPE LINES
+        p1=plot(v_plot,npos_full,'b');
+        plot(v_plot,nneg_full,'b');
+        line([v_dive,v_dive],[n3,n1],'Color','b');
+        % GUST LOAD LINES
+        p2=plot(v_plot,ngustpos_full,'r');
+        plot(v_plot,ngustneg_full,'r',...
+             v_plot,ngustpos_dive_full,'r',v_plot,ngustneg_dive_full,'r');
+        % ALLOWABLE ENVELOPE LINES
+        p3=plot(v_plot(ind_1:end),npos_allow,'LineWidth',4,'Color','g');
+        line([v_plot(ind_1),v_plot(ind_1)],[0,n_pos(ind_1)],'LineWidth',4,'Color','g');
+        plot(v_plot(ind_neg1:end),nneg_allow,'LineWidth',4,'Color','g');
+        line([v_plot(ind_neg1),v_plot(ind_neg1)],[0,n_neg(ind_neg1)],'LineWidth',4,'Color','g');
+        line([v_plot(ind_1),v_plot(ind_neg1)],[0,0],'LineWidth',4,'Color','g');
+        line([v_dive,v_dive],[nneg_allow(end),n1],'LineWidth',4,'Color','g');
+
+        title(['Flight Envelope: ' text],'FontSize',14);
+        xlabel('Velocity (m/s)','FontSize',12);   ylabel('Load Factor, n','FontSize',12);
+
+        legend([p1,p2,p3],{'Maneuvering Loads','Gust Loads','Allowable Envelope'},'FontSize',12,'Location','northwest');
+        print(fig,[pwd '/Flight_Envelope_Figure/' text '_Flight_Envelope'],'-djpeg');
+    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%                   EXTRACT CRITICAL LOAD FACTORS                 %%%
