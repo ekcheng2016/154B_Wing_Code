@@ -46,7 +46,7 @@ for ii = 1:length(airfoil_data)
 end
 
 % Plot Cl vs. Alpha graph (airfoil)
-if PLOT_PREVIOUS
+if PLOT_LIFTCURVE
     fig = figure(1);
     hold on; grid on;
     plot(naca2415(1).alpha,naca2415(1).Cl,'--r');
@@ -67,7 +67,7 @@ for ii = 1:length(airfoil_data)
     naca2415(ii).CLmax = (naca2415(ii).CL_alpha/naca2415(ii).Cl_alpha)*naca2415(ii).Clmax;
     naca2415(ii).CLmin = (naca2415(ii).CL_alpha/naca2415(ii).Cl_alpha)*naca2415(ii).Clmin;
 
-    if PLOT_PREVIOUS
+    if PLOT_LIFTCURVE
         if ii == 1
             plot(naca2415(ii).alpha,naca2415(ii).CL,'r','LineWidth',2);
         else
@@ -76,7 +76,7 @@ for ii = 1:length(airfoil_data)
     end
 end
 
-if PLOT_PREVIOUS
+if PLOT_LIFTCURVE
     legend({'Sea Level C_l','Ceiling C_l','Sea Level C_L','Ceiling C_L'},'FontSize',12,'Location','southeast');
     title('C_L vs. \alpha','FontSize',14);
 

@@ -3,7 +3,8 @@ close all;
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
-PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
+PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
+PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
 PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
 
 clrstring = 'bgkrc';
@@ -49,10 +50,8 @@ nz = 500;
 for ii = 1:length(n_allow_slvl.n)
     if ~isnan(n_allow_slvl.n(ii))
         % DETERMINE LOAD DISTRIBUTION
-        [load_slvl(ii)] = calc_wxwy(n_allow_slvl.n(ii),...
-                                    rho_sealvl,...
-                                    n_allow_slvl.V(ii),...
-                                    n_allow_slvl.AoA(ii),...
+        [load_slvl(ii)] = calc_wxwy(n_allow_slvl.n(ii),rho_sealvl,...
+                                    n_allow_slvl.V(ii),n_allow_slvl.AoA(ii),...
                                     n_allow_slvl.Cd(ii),nz);
         
         %PLOT DISTRIBUTIONS
@@ -137,9 +136,14 @@ for ii = 1:length(n_allow_slvl.n)
         [sigma_zz_slvl(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                                 moment_slvl(ii).Mx0(1),moment_slvl(ii).My0(1),...
                                 xU,yU,xL,yL);
+                            
+        
     end
 end
-
+sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
+sigma_zz_MAX_slvl_ind = find([sigma_zz_slvl(1:end).max]/1e6 == sigma_zz_MAX_slvl_val);
+disp(strjoin(['Max sigma_zz at Sea Level : ' num2str(sigma_zz_MAX_slvl_val) ...
+    'MPa, occurs at : ' n_allow_slvl.name(sigma_zz_MAX_slvl_ind)]))
 
 if PLOT_PREVIOUS
 figure(100);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');
@@ -223,10 +227,8 @@ end
 for ii = 1:length(n_allow_ceil.n)
     if ~isnan(n_allow_ceil.n(ii))
         % DETERMINE LOAD DISTRIBUTION
-        [load_ceil(ii)] = calc_wxwy(n_allow_ceil.n(ii),...
-                                    rho_altceil,...
-                                    n_allow_ceil.V(ii),...
-                                    n_allow_ceil.AoA(ii),...
+        [load_ceil(ii)] = calc_wxwy(n_allow_ceil.n(ii),rho_altceil,...
+                                    n_allow_ceil.V(ii),n_allow_ceil.AoA(ii),...
                                     n_allow_ceil.Cd(ii),nz);
         
         %PLOT DISTRIBUTIONS
@@ -314,6 +316,12 @@ for ii = 1:length(n_allow_ceil.n)
                             xU,yU,xL,yL);
     end
 end
+
+sigma_zz_MAX_ceil_val = max([sigma_zz_ceil(1:end).max])/1e6;
+sigma_zz_MAX_ceil_ind = find([sigma_zz_ceil(1:end).max]/1e6 == sigma_zz_MAX_ceil_val);
+disp(strjoin(['Max sigma_zz at Ceiling : ' num2str(sigma_zz_MAX_ceil_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MAX_ceil_ind)]))
+
 
 if PLOT_PREVIOUS
 figure(200);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');

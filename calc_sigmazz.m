@@ -18,6 +18,7 @@
 % Outputs:
 %   sigma_zz_U: sigma_zz at the root on the upper surface of wing (Pa)
 %   sigma_zz_L: sigma_zz at the root on the lower surface of wing (Pa)
+%   sigma_zz_max : max absolute value direct stress (Pa)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ sigma_zz ] = calc_sigmazz( Ixx,Iyy,Ixy,Mx,My,xU,yU,xL,yL )
 
@@ -33,5 +34,7 @@ end
 
 sigma_zz.upper = sigma_zz_U;
 sigma_zz.lower = sigma_zz_L;
+
+sigma_zz.max   = max([abs(sigma_zz_U) abs(sigma_zz_L)]);
 end
 
