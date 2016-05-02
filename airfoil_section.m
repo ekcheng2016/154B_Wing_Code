@@ -126,8 +126,8 @@ Cx_sum = 0;
 Cy_sum = 0;
 A_sum = 0;
 
-% 3 spars
-for i = 1:3
+% 2 spars
+for i = 1:2
     Cx_sum = Cx_sum + x_spar(i)*A_spar(i);
     Cy_sum = Cy_sum + Cy_spar(i)*A_spar(i);
     A_sum = A_sum + A_spar(i);
@@ -184,7 +184,7 @@ Iyy = 0;
 Ixy = 0;
 
 % 3 spars
-for i = 1:3
+for i = 1:2
     Ixx = Ixx + t_spar*h_spar(i)^3/12 + A_spar(i)*(Cy_spar(i)-Cy)^2;
     Iyy = Iyy + t_spar^3*h_spar(i)/12 + A_spar(i)*(x_spar(i)-Cx)^2;
     Ixy = Ixy + A_spar(i)*(Cy_spar(i)-Cy)*(x_spar(i)-Cx);

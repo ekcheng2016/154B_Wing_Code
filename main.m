@@ -386,14 +386,14 @@ figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
 end
                 
 % TODO: airfoil section properties
-% A_cap = ;
-% A_str = ;
-% t_spar = ;
-% t_skin = ;
+A_cap = 5/1000;   % m^2
+A_str = 3/1000;   % m^2
+t_spar = 0.005;   % m
+t_skin = 0.0025;  % m
 % % locations of spars, spar caps and stringers (nose at the origin of the coordinate)
-% x_spar0 = ;                       % front spar (2 cell beam)
-% x_strU0 = [];                     % upper surface
-% x_strL0 = [];                     % lower surface
+x_spar0 = 0.25*c;                 % front spar (2 cell beam)
+x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
+x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
 % % new coordinate with origin at the centroid is used for the output below
-% [c,Ixx,Iyy,Ixy,x,yU,yL,x_strU,x_strL,x_boomU,x_boomL,L_boomU,L_boomL,x_spar,h_spar,i_spar,dx] = airfoil_section(A_cap,A_str,t_spar,t_skin,x_spar0,x_strU0,x_strL0);
-
+[Cx_test Cy_test Ixx_test Iyy_test Ixy_test] = airfoil_section(c,A_cap,A_str,...
+                                                t_spar,t_skin,x_spar0,x_strU0,x_strL0);

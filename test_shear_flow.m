@@ -7,7 +7,7 @@ close all
 clc
 
 load_aircraft_parameters
-load('Airfoil_Data\NACA2415_coordinates');
+load('Airfoil_Data/NACA2415_coordinates');
 xy_scaled = c*xy_NACA_2415; %[m]
 idx_zero = find(xy_scaled(:,1) == 0);
 
