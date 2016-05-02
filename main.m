@@ -2,7 +2,8 @@ clear all;
 close all; 
 clc;
 
-PLOT_PREVIOUS = 0; % set 1 to plot and save all previous plots
+PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
+PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
 
 clrstring = 'bgkrc';
 
@@ -13,11 +14,25 @@ Re_sealvl = calc_Re(rho_sealvl,c,v_maneuver,mu_sealvl);
 Re_alceil = calc_Re(rho_altceil,c,v_maneuver,mu_altceil);
 
 airfoil_to_wing;
-n_allow_slvl = calc_flgt_envel(naca2415(1),rho_sealvl,'Sea Level',PLOT_PREVIOUS);
-n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 feet)',PLOT_PREVIOUS);
+n_allow_slvl = calc_flgt_envel(naca2415(1),rho_sealvl,'Sea Level',PLOT_FLTENVELOPE);
+n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 feet)',PLOT_FLTENVELOPE);
 
-calc_centroid_momentinertia;
+% SIMPLIFIED MODEL
+% calc_centroid_momentinertia;
 
+% ACTUAL AIRFOIL SECTION
+A_cap = 5/1000;   % m^2
+A_str = 3/1000;   % m^2
+t_spar = 0.0025;   % m
+t_skin = 0.001016;  % m
+% % locations of spars, spar caps and stringers (nose at the origin of the coordinate)
+x_spar0 = 0.25*c;                 % front spar (2 cell beam)
+x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
+x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
+% % new coordinate with origin at the centroid is used for the output below
+[Cx,Cy,Ixx,Iyy,Ixy,xU,xL,yU,yL,x_strU,x_strL,x_spar,h_spar,i_spar] = ...
+    airfoil_section(c,A_cap,A_str, t_spar,t_skin,x_spar0,x_strU0,x_strL0);
+                        
 % SEA LEVEL Load Distributions
 % AT ALL CRITICAL CONDITIONS
 % NOTE:
@@ -384,16 +399,3 @@ figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 print(v_fig,[pwd '/Deflection_Figures/CEIL_v'],'-djpeg','-r300');
 
 end
-                
-% TODO: airfoil section properties
-A_cap = 5/1000;   % m^2
-A_str = 3/1000;   % m^2
-t_spar = 0.005;   % m
-t_skin = 0.0025;  % m
-% % locations of spars, spar caps and stringers (nose at the origin of the coordinate)
-x_spar0 = 0.25*c;                 % front spar (2 cell beam)
-x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
-x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
-% % new coordinate with origin at the centroid is used for the output below
-[Cx_test Cy_test Ixx_test Iyy_test Ixy_test] = airfoil_section(c,A_cap,A_str,...
-                                                t_spar,t_skin,x_spar0,x_strU0,x_strL0);

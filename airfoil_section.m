@@ -20,14 +20,23 @@
 %   Ixx:        xx-area moment of inertia         (m^4)
 %   Iyy:        yy-area moment of inertia         (m^4)
 %   Ixy:        xy-area moment of inertia         (m^4)
+%   xU:         x-coordinate of upper surface from centroid    (m)
+%   yU:         y-coordinate of upper surface from centroid    (m)
+%   xL:         x-coordinate of lower surface from centroid    (m)
+%   yL:         y-coordinate of lower surface from centroid    (m)
+%   x_strU:     x-coordinate of upper stringers from centroid  (m)
+%   x_strL:     x-coordinate of lower stringers from centroid  (m)
+%   x_spar:     x-coordinate of spars from centroid            (m)
+%   h_spar:     spar heights                                   (m)
+%   i_spar:     spar indices                                   (-)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [Cx,Cy,Ixx,Iyy,Ixy] = airfoil_section(c, A_cap,A_str,t_spar,t_skin,x_spar,x_strU,x_strL)
+function [Cx,Cy,Ixx,Iyy,Ixy,xU,yU,xL,yL,x_strU,x_strL,x_spar,h_spar,i_spar] = ...
+    airfoil_section(c, A_cap,A_str,t_spar,t_skin,x_spar,x_strU,x_strL)
 %% airfoil section profile
 % NACA 2415
 m = 0.02;
 p = 0.4;
 t = 0.15;
-c = 1.5;              % chord length
 
 n = 500;            % number of increments
 dx = c/n;
@@ -195,14 +204,16 @@ for i = 1:2
     Ixy = Ixy + A_spar(i)*(Cy_spar(i)-Cy)*(x_spar(i)-Cx);
 end
 
-% spar caps
-for i = 1:2
-   Ixx = Ixx + A_cap*(yU(i_spar(i))-Cy)^2 + A_cap*(yL(i_spar(i))-Cy)^2;;
-   Iyy = Iyy + 2*A_cap*(x_spar(i)-Cx)^2;    % 2 spar caps per x location
-   Ixy = Ixy + A_cap*(yU(i_spar(i))-Cy)*(x_spar(i)-Cx); % upper spar cap
-   Ixy = Ixy + A_cap*(yL(i_spar(i))-Cy)*(x_spar(i)-Cx); % lower spar cap
-end
-
+% spar caps (2 in the rear, 4 in the front)
+Ixx = Ixx + 2*((A_cap*(yU(i_spar(1))-Cy)^2)+(A_cap*(yL(i_spar(1))-Cy)^2));
+Ixx = Ixx + ((A_cap*(yU(i_spar(2))-Cy)^2)+(A_cap*(yL(i_spar(2))-Cy)^2));
+Iyy = Iyy + 4*A_cap*(x_spar(1)-Cx)^2;    % 4 spar caps - front location
+Iyy = Iyy + 2*A_cap*(x_spar(2)-Cx)^2;    % 2 spar caps - rear location
+Ixy = Ixy + 2*A_cap*(yU(i_spar(1))-Cy)*(x_spar(1)-Cx); % upper spar cap - front
+Ixy = Ixy + 2*A_cap*(yL(i_spar(1))-Cy)*(x_spar(1)-Cx); % lower spar cap - front
+Ixy = Ixy + A_cap*(yU(i_spar(2))-Cy)*(x_spar(2)-Cx); % upper spar cap - rear
+Ixy = Ixy + A_cap*(yL(i_spar(2))-Cy)*(x_spar(2)-Cx); % lower spar cap - rear
+   
 % upper stringers
 for i = 1:length(n_strU)
     Ixx = Ixx + A_str*(Cy_skinU(i)-Cy)^2;
@@ -230,3 +241,23 @@ for i = 1:n_skinL
    Iyy = Iyy + A_skinL(i)*(x_skinL(i)-Cx)^2;
    Ixy = Ixy + A_skinL(i)*(Cy_skinL(i)-Cy)*(x_skinL(i)-Cx);
 end
+
+%% convert coordinates to centroid as origin
+xU = xU - Cx;
+yU = yU - Cy;
+xL = xL - Cx;
+yL = yL - Cy;
+x_strU = x_strU - Cx;
+x_strL = x_strL - Cx;
+x_spar = x_spar - Cx;
+
+% figure
+plot(xU,yU,'k',xL,yL,'k','Linewidth',2);
+ylim([-0.3 0.3])
+hold on
+plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
+plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)]-Cx,[yU(end),yL(end)],'b','Linewidth',3);
+plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
+scatter(Cx-Cx,Cy-Cy,'m*')
+ylabel('y (m)')
+xlabel('x (m)')
