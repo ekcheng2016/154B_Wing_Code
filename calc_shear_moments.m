@@ -14,7 +14,7 @@
 % Outputs:
 %   shear_moment:     structure containing the shear and moment profiles
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [shear_moment] = calc_shear_moments(b,nz,wx,wy,wx0,wy0)
+function [shear,moment] = calc_shear_moments(b,nz,wx,wy,wx0,wy0)
 
 L = b/2;                % half span         m
 z = 0:L/nz:L;
@@ -52,12 +52,13 @@ for i = 1:nz+1
     Sy0(i) = Sy_sum(nz+2-i);
 end
 
-shear_moment.z   = z;
-shear_moment.Sx  = Sx_sum;
-shear_moment.Sy  = Sy_sum;
-shear_moment.Sx0 = Sx0;
-shear_moment.Sy0 = Sy0;
-shear_moment.Mx  = Mx_sum;
-shear_moment.My  = My_sum;
-shear_moment.Mx0 = Mx0;
-shear_moment.My0 = My0;
+shear.z   = z;
+moment.z  = z;
+shear.Sx  = Sx_sum;
+shear.Sy  = Sy_sum;
+shear.Sx0 = Sx0;
+shear.Sy0 = Sy0;
+moment.Mx  = Mx_sum;
+moment.My  = My_sum;
+moment.Mx0 = Mx0;
+moment.My0 = My0;

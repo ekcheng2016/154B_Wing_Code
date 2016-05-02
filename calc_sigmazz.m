@@ -1,4 +1,3 @@
-function [ sigma_zz_U sigma_zz_L ] = calc_sigmazz( Ixx,Iyy,Ixy,Mx,My,xU,yU,xL,yL )
 % calc_sigmazz.m
 %
 % Description:
@@ -20,16 +19,19 @@ function [ sigma_zz_U sigma_zz_L ] = calc_sigmazz( Ixx,Iyy,Ixy,Mx,My,xU,yU,xL,yL
 %   sigma_zz_U: sigma_zz at the root on the upper surface of wing (Pa)
 %   sigma_zz_L: sigma_zz at the root on the lower surface of wing (Pa)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [ sigma_zz ] = calc_sigmazz( Ixx,Iyy,Ixy,Mx,My,xU,yU,xL,yL )
 
 for i = 1:length(xU)
-    sigma_zz_U = (Mx*(Iyy*yU(i) - Ixy*xU(i)))/(Ixx*Iyy - Ixy^2) + ...
-                 (My*(Ixx*xU(i) - Ixy*yU(i)))/(Ixx*Iyy - Ixy^2);
+    sigma_zz_U(i) = (Mx*(Iyy*yU(i) - Ixy*xU(i)))/(Ixx*Iyy - Ixy^2) + ...
+                    (My*(Ixx*xU(i) - Ixy*yU(i)))/(Ixx*Iyy - Ixy^2);
 end
 
 for i = 1:length(xL)
-    sigma_zz_L = (Mx*(Iyy*yL(i) - Ixy*xL(i)))/(Ixx*Iyy - Ixy^2) + ...
-                 (My*(Ixx*xL(i) - Ixy*yL(i)))/(Ixx*Iyy - Ixy^2);
+    sigma_zz_L(i) = (Mx*(Iyy*yL(i) - Ixy*xL(i)))/(Ixx*Iyy - Ixy^2) + ...
+                    (My*(Ixx*xL(i) - Ixy*yL(i)))/(Ixx*Iyy - Ixy^2);
 end
-    
+
+sigma_zz.upper = sigma_zz_U;
+sigma_zz.lower = sigma_zz_L;
 end
 

@@ -31,7 +31,7 @@
 %   i_spar:     spar indices                                   (-)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [Cx,Cy,Ixx,Iyy,Ixy,xU,yU,xL,yL,x_strU,x_strL,x_spar,h_spar,i_spar] = ...
-    airfoil_section(c, A_cap,A_str,t_spar,t_skin,x_spar,x_strU,x_strL)
+    airfoil_section(c, A_cap,A_str,t_spar,t_skin,x_spar,x_strU,x_strL,PLOT_AIRFOIL)
 %% airfoil section profile
 % NACA 2415
 m = 0.02;
@@ -181,16 +181,20 @@ end
 Cx = Cx_sum/A_sum;
 Cy = Cy_sum/A_sum;
 
-figure
-plot(x,yU,'k',x,yL,'k','Linewidth',2);
-ylim([-0.3 0.3])
-hold on
-plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
-plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)],[yU(end),yL(end)],'b','Linewidth',3);
-plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
-scatter(Cx,Cy,'m*')
-ylabel('y (m)')
-xlabel('x (m)')
+if PLOT_AIRFOIL
+    afc = figure();
+    plot(x,yU,'k',x,yL,'k','Linewidth',2);
+    ylim([-0.3 0.3])
+    hold on; grid on;
+    plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
+    plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)],[yU(end),yL(end)],'b','Linewidth',3);
+    plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
+    scatter(Cx,Cy,'m*')
+    title('NACA 2415 with Origin at Nose','fontsize',14);
+    ylabel('y (m)')
+    xlabel('x (m)')
+    print(afc,[pwd '/Airfoil_Section/REAL_Airfoil_Origin'],'-djpeg','-r300');
+end
 
 %% Area moments of inertia
 Ixx = 0;
@@ -251,13 +255,17 @@ x_strU = x_strU - Cx;
 x_strL = x_strL - Cx;
 x_spar = x_spar - Cx;
 
-% figure
-plot(xU,yU,'k',xL,yL,'k','Linewidth',2);
-ylim([-0.3 0.3])
-hold on
-plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
-plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)]-Cx,[yU(end),yL(end)],'b','Linewidth',3);
-plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
-scatter(Cx-Cx,Cy-Cy,'m*')
-ylabel('y (m)')
-xlabel('x (m)')
+if PLOT_AIRFOIL
+    afc = figure();
+    plot(xU,yU,'k',xL,yL,'k','Linewidth',2);
+    ylim([-0.3 0.3])
+    hold on; grid on;
+    plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
+    plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)]-Cx,[yU(end),yL(end)],'b','Linewidth',3);
+    plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
+    scatter(Cx-Cx,Cy-Cy,'m*')
+    title('NACA 2415 Normalized to Centroid','fontsize',14);
+    ylabel('y (m)')
+    xlabel('x (m)')
+    print(afc,[pwd '/Airfoil_Section/REAL_Airfoil_Centroid'],'-djpeg','-r300');
+end

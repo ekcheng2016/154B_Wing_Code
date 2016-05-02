@@ -3,6 +3,7 @@ close all;
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
+PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
 PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
 
 clrstring = 'bgkrc';
@@ -13,9 +14,14 @@ load_conversions;
 Re_sealvl = calc_Re(rho_sealvl,c,v_maneuver,mu_sealvl);
 Re_alceil = calc_Re(rho_altceil,c,v_maneuver,mu_altceil);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                 CALCULATE FLIGHT ENVELOPE                           %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 airfoil_to_wing;
 n_allow_slvl = calc_flgt_envel(naca2415(1),rho_sealvl,'Sea Level',PLOT_FLTENVELOPE);
 n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 feet)',PLOT_FLTENVELOPE);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % SIMPLIFIED MODEL
 % calc_centroid_momentinertia;
@@ -31,10 +37,11 @@ x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
 x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
 % % new coordinate with origin at the centroid is used for the output below
 [Cx,Cy,Ixx,Iyy,Ixy,xU,xL,yU,yL,x_strU,x_strL,x_spar,h_spar,i_spar] = ...
-    airfoil_section(c,A_cap,A_str, t_spar,t_skin,x_spar0,x_strU0,x_strL0);
+    airfoil_section(c,A_cap,A_str, t_spar,t_skin,x_spar0,x_strU0,x_strL0,PLOT_AIRFOIL);
                         
-% SEA LEVEL Load Distributions
-% AT ALL CRITICAL CONDITIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%           LOAD DISTRIBUTIONS @ SEA LEVEL (all critical pts)         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE:
 %  wx0 and wy0 here are defined from root to tip.
 %  wy and wx below are defined from tip to root.
@@ -42,21 +49,11 @@ nz = 500;
 for ii = 1:length(n_allow_slvl.n)
     if ~isnan(n_allow_slvl.n(ii))
         % DETERMINE LOAD DISTRIBUTION
-        [load_slvl(ii).z, ...
-         load_slvl(ii).wx0     load_slvl(ii).wy0,...
-         load_slvl(ii).l_ellip load_slvl(ii).l_rect,...
-         load_slvl(ii).l       load_slvl(ii).d] = ...
-                          calc_wxwy(n_allow_slvl.n(ii),...
+        [load_slvl(ii)] = calc_wxwy(n_allow_slvl.n(ii),...
                                     rho_sealvl,...
                                     n_allow_slvl.V(ii),...
                                     n_allow_slvl.AoA(ii),...
                                     n_allow_slvl.Cd(ii),nz);
-        load_slvl(ii).wy = zeros(1,nz+1);
-        load_slvl(ii).wx = zeros(1,nz+1);
-        for i = 1:nz+1
-            load_slvl(ii).wy(i) = load_slvl(ii).wx0(nz+2-i);
-            load_slvl(ii).wx(i) = load_slvl(ii).wy0(nz+2-i);
-        end
         
         %PLOT DISTRIBUTIONS
         if PLOT_PREVIOUS
@@ -92,41 +89,37 @@ for ii = 1:length(n_allow_slvl.n)
         end
                   
         % DETERMINE SHEARS AND MOMENTS          
-        shear_moment_slvl(ii) = calc_shear_moments(b, nz, load_slvl(ii).wx,...
-                                    load_slvl(ii).wy,...
-                                    load_slvl(ii).wx0,...
-                                    load_slvl(ii).wy0);
+        [shear_slvl(ii) moment_slvl(ii)] = calc_shear_moments(b, nz,...
+                                    load_slvl(ii).wx,load_slvl(ii).wy,...
+                                    load_slvl(ii).wx0,load_slvl(ii).wy0);
         
         % PLOT
         if PLOT_PREVIOUS
         sx_fig = figure(106);
         hold on; box on; grid on;
-        sxf(ii) = plot(shear_moment_slvl(ii).z,shear_moment_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_slvl(ii).z,shear_moment_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
+        sxf(ii) = plot(shear_slvl(ii).z,shear_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_slvl(ii).z,shear_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
         
         sy_fig = figure(107);
         hold on; box on; grid on;
-        syf(ii) = plot(shear_moment_slvl(ii).z,shear_moment_slvl(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_slvl(ii).z,shear_moment_slvl(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
+        syf(ii) = plot(shear_slvl(ii).z,shear_slvl(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_slvl(ii).z,shear_slvl(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
                   
         mx_fig = figure(108);
         hold on; box on; grid on;
-        mxf(ii) = plot(shear_moment_slvl(ii).z,shear_moment_slvl(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_slvl(ii).z,shear_moment_slvl(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
+        mxf(ii) = plot(moment_slvl(ii).z,moment_slvl(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_slvl(ii).z,moment_slvl(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
                   
         my_fig = figure(109);
         hold on; box on; grid on;
-        myf(ii) = plot(shear_moment_slvl(ii).z,shear_moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_slvl(ii).z,shear_moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);        
+        myf(ii) = plot(moment_slvl(ii).z,moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_slvl(ii).z,moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);        
         end
                   
         % DETERMINE DEFLECTIONS
-        deflection_slvl(ii) = calc_deflections(b, Ixx, Iyy, Ixy,...
-                                    shear_moment_slvl(ii).Mx0,...
-                                    shear_moment_slvl(ii).My0,...
-                                    nz,...
-                                    load_slvl(ii).wx0,...
-                                    load_slvl(ii).wy0);
+        deflection_slvl(ii) = calc_deflections(b, Ixx, Iyy, Ixy,nz,...
+                                    moment_slvl(ii).Mx0,moment_slvl(ii).My0,...
+                                    load_slvl(ii).wx0,load_slvl(ii).wy0);
                                 
         if PLOT_PREVIOUS
         u_fig = figure(110);
@@ -139,6 +132,11 @@ for ii = 1:length(n_allow_slvl.n)
         vf(ii) = plot(deflection_slvl(ii).z,deflection_slvl(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
                  plot(-deflection_slvl(ii).z,deflection_slvl(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
         end
+        
+        % SIGMA_ZZ AT THE ROOT
+        [sigma_zz_slvl(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
+                                moment_slvl(ii).Mx0(1),moment_slvl(ii).My0(1),...
+                                xU,yU,xL,yL);
     end
 end
 
@@ -218,27 +216,18 @@ figure(111);    xlabel('Span (m)');     ylabel('v deflection (mm)');
 
 end
                 
-                
-% CEILING ALTITUDE Load Distributions
-% AT ALL CRITICAL CONDITIONS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%           LOAD DISTRIBUTIONS @ CEILING   (all critical pts)         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for ii = 1:length(n_allow_ceil.n)
     if ~isnan(n_allow_ceil.n(ii))
         % DETERMINE LOAD DISTRIBUTION
-        [load_ceil(ii).z, ...
-         load_ceil(ii).wx0     load_ceil(ii).wy0,...
-         load_ceil(ii).l_ellip load_ceil(ii).l_rect,...
-         load_ceil(ii).l       load_ceil(ii).d] = ...
-                          calc_wxwy(n_allow_ceil.n(ii),...
+        [load_ceil(ii)] = calc_wxwy(n_allow_ceil.n(ii),...
                                     rho_altceil,...
                                     n_allow_ceil.V(ii),...
                                     n_allow_ceil.AoA(ii),...
                                     n_allow_ceil.Cd(ii),nz);
-        load_ceil(ii).wy = zeros(1,nz+1);
-        load_ceil(ii).wx = zeros(1,nz+1);
-        for i = 1:nz+1
-            load_ceil(ii).wy(i) = load_ceil(ii).wx0(nz+2-i);
-            load_ceil(ii).wx(i) = load_ceil(ii).wy0(nz+2-i);
-        end
         
         %PLOT DISTRIBUTIONS
         if PLOT_PREVIOUS
@@ -274,42 +263,38 @@ for ii = 1:length(n_allow_ceil.n)
         end
                   
         % DETERMINE SHEARS AND MOMENTS          
-        shear_moment_ceil(ii) = calc_shear_moments(b, nz, load_ceil(ii).wx,...
-                                    load_ceil(ii).wy,...
-                                    load_ceil(ii).wx0,...
-                                    load_ceil(ii).wy0);
+        [shear_ceil(ii) moment_ceil(ii)] = calc_shear_moments(b, nz,...
+                                    load_ceil(ii).wx,load_ceil(ii).wy,...
+                                    load_ceil(ii).wx0,load_ceil(ii).wy0);
         
         % PLOT
         if PLOT_PREVIOUS
         sx_fig = figure(206);
         hold on; box on; grid on;
-        sxf(ii) = plot(shear_moment_ceil(ii).z,shear_moment_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_ceil(ii).z,shear_moment_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
+        sxf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_ceil(ii).z,shear_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
         
         sy_fig = figure(207);
         hold on; box on; grid on;
-        syf(ii) = plot(shear_moment_ceil(ii).z,shear_moment_ceil(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_ceil(ii).z,shear_moment_ceil(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
+        syf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_ceil(ii).z,shear_ceil(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
                   
         mx_fig = figure(208);
         hold on; box on; grid on;
-        mxf(ii) = plot(shear_moment_ceil(ii).z,shear_moment_ceil(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_ceil(ii).z,shear_moment_ceil(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
+        mxf(ii) = plot(moment_ceil(ii).z,moment_ceil(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_ceil(ii).z,moment_ceil(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
                   
         my_fig = figure(209);
         hold on; box on; grid on;
-        myf(ii) = plot(shear_moment_ceil(ii).z,shear_moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_moment_ceil(ii).z,shear_moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);        
+        myf(ii) = plot(moment_ceil(ii).z,moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_ceil(ii).z,moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);        
       
         end
         
         % DETERMINE DEFLECTIONS
-        deflection_ceil(ii) = calc_deflections(b, Ixx, Iyy, Ixy,...
-                                    shear_moment_ceil(ii).Mx0,...
-                                    shear_moment_ceil(ii).My0,...
-                                    nz,...
-                                    load_ceil(ii).wx0,...
-                                    load_ceil(ii).wy0);
+        deflection_ceil(ii) = calc_deflections(b, Ixx, Iyy, Ixy,nz,...
+                                    moment_ceil(ii).Mx0,moment_ceil(ii).My0,...
+                                    load_ceil(ii).wx0,load_ceil(ii).wy0);
         
         if PLOT_PREVIOUS
         u_fig = figure(210);
@@ -322,6 +307,11 @@ for ii = 1:length(n_allow_ceil.n)
         vf(ii) = plot(deflection_ceil(ii).z,deflection_ceil(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
                  plot(-deflection_ceil(ii).z,deflection_ceil(ii).v*1000,'Color',clrstring(ii),'linewidth',2);
         end
+        
+        % SIGMA_ZZ AT THE ROOT
+        [sigma_zz_ceil(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
+                            moment_ceil(ii).Mx0(1),moment_ceil(ii).My0(1),...
+                            xU,yU,xL,yL);
     end
 end
 

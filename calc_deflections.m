@@ -20,7 +20,7 @@
 %   deflections :   structure containing deflection profile
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [deflections] = calc_deflections(b,Ixx,Iyy,Ixy,Mx0,My0,nz,wx0,wy0)
+function [deflections] = calc_deflections(b,Ixx,Iyy,Ixy,nz,Mx0,My0,wx0,wy0)
 
     L = b/2;                % half span         m
     z = 0:L/nz:L;
