@@ -134,7 +134,12 @@ for i = 1:2
 end
 
 % spar caps
-
+for i = 1:2
+    Cx_sum = Cx_sum + x_spar(i)*A_cap;
+    Cy_sum = Cy_sum + yU(i_spar(i))*A_cap;
+    Cy_sum = Cy_sum + yL(i_spar(i))*A_cap;
+    A_sum  = A_sum  + 2*A_cap;
+end
 
 % upper stringers
 for i = 1:length(n_strU)
@@ -191,9 +196,37 @@ for i = 1:2
 end
 
 % spar caps
+for i = 1:2
+   Ixx = Ixx + A_cap*(yU(i_spar(i))-Cy)^2 + A_cap*(yL(i_spar(i))-Cy)^2;;
+   Iyy = Iyy + 2*A_cap*(x_spar(i)-Cx)^2;    % 2 spar caps per x location
+   Ixy = Ixy + A_cap*(yU(i_spar(i))-Cy)*(x_spar(i)-Cx); % upper spar cap
+   Ixy = Ixy + A_cap*(yL(i_spar(i))-Cy)*(x_spar(i)-Cx); % lower spar cap
+end
 
-%
-%
-% please finish this part. You can use the previous code as a reference.
-%
-%
+% upper stringers
+for i = 1:length(n_strU)
+    Ixx = Ixx + A_str*(Cy_skinU(i)-Cy)^2;
+    Iyy = Iyy + A_str*(x_strU(i)-Cx)^2;
+    Ixy = Ixy + A_str*(Cy_skinU(i)-Cy)*(x_strU(i)-Cx);
+end
+
+% lower stringers
+for i = 1:length(n_strU)
+    Ixx = Ixx + A_str*(Cy_skinL(i)-Cy)^2;
+    Iyy = Iyy + A_str*(x_strL(i)-Cx)^2;
+    Ixy = Ixy + A_str*(Cy_skinL(i)-Cy)*(x_strL(i)-Cx);
+end
+
+% upper skin
+for i = 1:n_skinU
+   Ixx = Ixx + A_skinU(i)*(Cy_skinU(i)-Cy)^2;
+   Iyy = Iyy + A_skinU(i)*(x_skinU(i)-Cx)^2;
+   Ixy = Ixy + A_skinU(i)*(Cy_skinU(i)-Cy)*(x_skinU(i)-Cx);
+end
+
+% lower skin
+for i = 1:n_skinL
+   Ixx = Ixx + A_skinL(i)*(Cy_skinL(i)-Cy)^2;
+   Iyy = Iyy + A_skinL(i)*(x_skinL(i)-Cx)^2;
+   Ixy = Ixy + A_skinL(i)*(Cy_skinL(i)-Cy)*(x_skinL(i)-Cx);
+end
