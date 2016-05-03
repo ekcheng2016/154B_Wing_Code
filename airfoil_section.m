@@ -30,8 +30,17 @@
 %   h_spar:     spar heights                                   (m)
 %   i_spar:     spar indices                                   (-)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [Cx,Cy,Ixx,Iyy,Ixy,xU,yU,xL,yL,x_strU,x_strL,x_spar,h_spar,i_spar] = ...
-    airfoil_section(c, A_cap,A_str,t_spar,t_skin,x_spar,x_strU,x_strL,PLOT_AIRFOIL)
+function [Cx,Cy,Ixx,Iyy,Ixy,airf_geo] = ...
+    airfoil_section(c,airf_geo,PLOT_AIRFOIL)
+% dereference airfoil geometry structure
+A_cap = airf_geo.A_cap;
+A_str = airf_geo.A_str;
+t_spar = airf_geo.t_spar;
+t_skin = airf_geo.t_skin;
+x_spar = airf_geo.x_spar0;
+x_strU = airf_geo.x_strU0;
+x_strL = airf_geo.x_strL0;
+
 %% airfoil section profile
 % NACA 2415
 m = 0.02;
@@ -247,13 +256,19 @@ for i = 1:n_skinL
 end
 
 %% convert coordinates to centroid as origin
-xU = xU - Cx;
-yU = yU - Cy;
-xL = xL - Cx;
-yL = yL - Cy;
-x_strU = x_strU - Cx;
-x_strL = x_strL - Cx;
-x_spar = x_spar - Cx;
+airf_geo.x  = x  - Cx;              % x-coordinates (relative to centroid)
+airf_geo.xU = xU - Cx;              % x-coordinates of upper surface booms (rel to centroid)
+airf_geo.yU = yU - Cy;              % y-coordinates of upper surface booms (rel to centroid)
+airf_geo.xL = xL - Cx;              % x-coordiantes of lower surface booms (rel to centroid)
+airf_geo.yL = yL - Cy;              % y-coordinates of lower surface booms (rel to centroid)
+airf_geo.x_strU = x_strU - Cx;      % x-coordinates of upper stringers (rel to centroid)
+airf_geo.x_strL = x_strL - Cx;      % x-coordinates of lower strings (rel to centroid)
+airf_geo.x_spar = x_spar - Cx;      % x-coordinates of spars (rel to centroid)
+airf_geo.L_boomU = L_skinU;         % length between each upper surface boom
+airf_geo.L_boomL = L_skinL;         % length between each lower surface boom
+airf_geo.h_spar  = h_spar;          % height of each spar
+airf_geo.i_spar  = i_spar;          % index of each spar
+airf_geo.dx      = dx;              % change in x (m)
 
 if PLOT_AIRFOIL
     afc = figure();

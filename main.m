@@ -28,17 +28,17 @@ n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 
 % calc_centroid_momentinertia;
 
 % ACTUAL AIRFOIL SECTION
-A_cap = 5/1000;   % m^2
-A_str = 3/1000;   % m^2
-t_spar = 0.0025;   % m
-t_skin = 0.001016;  % m
+airf_geo.A_cap = 5/1000;   % m^2
+airf_geo.A_str = 3/1000;   % m^2
+airf_geo.t_spar = 0.0025;   % m
+airf_geo.t_skin = 0.001016;  % m
 % % locations of spars, spar caps and stringers (nose at the origin of the coordinate)
-x_spar0 = 0.25*c;                 % front spar (2 cell beam)
-x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
-x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
+airf_geo.x_spar0 = 0.25*c;                 % front spar (2 cell beam)
+airf_geo.x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
+airf_geo.x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
 % % new coordinate with origin at the centroid is used for the output below
-[Cx,Cy,Ixx,Iyy,Ixy,xU,xL,yU,yL,x_strU,x_strL,x_spar,h_spar,i_spar] = ...
-    airfoil_section(c,A_cap,A_str, t_spar,t_skin,x_spar0,x_strU0,x_strL0,PLOT_AIRFOIL);
+[Cx,Cy,Ixx,Iyy,Ixy,airf_geo] = ...
+    airfoil_section(c,airf_geo,PLOT_AIRFOIL);
                         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%           LOAD DISTRIBUTIONS @ SEA LEVEL (all critical pts)         %%%
@@ -135,9 +135,8 @@ for ii = 1:length(n_allow_slvl.n)
         % SIGMA_ZZ AT THE ROOT
         [sigma_zz_slvl(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                                 moment_slvl(ii).Mx0(1),moment_slvl(ii).My0(1),...
-                                xU,yU,xL,yL);
+                                airf_geo.xU,airf_geo.yU,airf_geo.xL,airf_geo.yL);
                             
-        
     end
 end
 sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
@@ -313,7 +312,7 @@ for ii = 1:length(n_allow_ceil.n)
         % SIGMA_ZZ AT THE ROOT
         [sigma_zz_ceil(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                             moment_ceil(ii).Mx0(1),moment_ceil(ii).My0(1),...
-                            xU,yU,xL,yL);
+                            airf_geo.xU,airf_geo.yU,airf_geo.xL,airf_geo.yL);
     end
 end
 
