@@ -3,7 +3,7 @@ close all;
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
-PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
+PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
 PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
 PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
 
@@ -92,6 +92,10 @@ for ii = 1:length(n_allow_slvl.n)
                                     load_slvl(ii).wx,load_slvl(ii).wy,...
                                     load_slvl(ii).wx0,load_slvl(ii).wy0);
         
+        % calculate shear flow
+        temp_output(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
+                                moment_slvl(ii).Mx0, moment_slvl(ii).My0);             
+                                
         % PLOT
         if PLOT_PREVIOUS
         sx_fig = figure(106);
@@ -143,6 +147,9 @@ sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
 sigma_zz_MAX_slvl_ind = find([sigma_zz_slvl(1:end).max]/1e6 == sigma_zz_MAX_slvl_val);
 disp(strjoin(['Max sigma_zz at Sea Level : ' num2str(sigma_zz_MAX_slvl_val) ...
     'MPa, occurs at : ' n_allow_slvl.name(sigma_zz_MAX_slvl_ind)]))
+
+
+
 
 if PLOT_PREVIOUS
 figure(100);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');

@@ -117,6 +117,7 @@ L_skinU = zeros(1,n_skinU);
 A_skinU = zeros(1,n_skinU);
 Cx_skinU = zeros(1,n_skinU);
 Cy_skinU = zeros(1,n_skinU);
+
 for i = 1:n_skinU
     L_skinU(i) = sqrt((yU(i_skinU(i+1)) - yU(i_skinU(i)))^2 + (x_skinU(i+1) - x_skinU(i))^2);
     A_skinU(i) = t_skin*L_skinU(i);
@@ -145,18 +146,24 @@ Cy_sum = 0;
 A_sum = 0;
 
 % 2 spars
-for i = 1:2
+for i = 1:length(x_spar)
     Cx_sum = Cx_sum + x_spar(i)*A_spar(i);
     Cy_sum = Cy_sum + Cy_spar(i)*A_spar(i);
     A_sum = A_sum + A_spar(i);
 end
 
 % spar caps
-for i = 1:2
-    Cx_sum = Cx_sum + x_spar(i)*A_cap;
-    Cy_sum = Cy_sum + yU(i_spar(i))*A_cap;
-    Cy_sum = Cy_sum + yL(i_spar(i))*A_cap;
-    A_sum  = A_sum  + 2*A_cap;
+for i = 1:length(x_spar)
+    if i ~= length(x_spar)
+        n = 2; % 2 spar caps per spar
+    else 
+        n = 1; % 1 spar cap for most rear spar (next to control surface)
+    end
+    Cx_sum = Cx_sum + x_spar(i)*n*A_cap;
+    Cy_sum = Cy_sum + yU(i_spar(i))*n*A_cap;
+    Cy_sum = Cy_sum + yL(i_spar(i))*n*A_cap;
+    A_sum  = A_sum  + 2*n*A_cap;
+
 end
 
 % upper stringers
@@ -196,7 +203,9 @@ if PLOT_AIRFOIL
     ylim([-0.3 0.3])
     hold on; grid on;
     plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
-    plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)],[yU(end),yL(end)],'b','Linewidth',3);
+    for i = 1:length(x_spar)
+        plot([x_spar(i),x_spar(i)],[yU(i_spar(i)),yL(i_spar(i))],'b','Linewidth',3)
+    end
     plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
     scatter(Cx,Cy,'m*')
     title('NACA 2415 with Origin at Nose','fontsize',14);
@@ -256,19 +265,29 @@ for i = 1:n_skinL
 end
 
 %% convert coordinates to centroid as origin
-airf_geo.x  = x  - Cx;              % x-coordinates (relative to centroid)
-airf_geo.xU = xU - Cx;              % x-coordinates of upper surface booms (rel to centroid)
-airf_geo.yU = yU - Cy;              % y-coordinates of upper surface booms (rel to centroid)
-airf_geo.xL = xL - Cx;              % x-coordiantes of lower surface booms (rel to centroid)
-airf_geo.yL = yL - Cy;              % y-coordinates of lower surface booms (rel to centroid)
-airf_geo.x_strU = x_strU - Cx;      % x-coordinates of upper stringers (rel to centroid)
-airf_geo.x_strL = x_strL - Cx;      % x-coordinates of lower strings (rel to centroid)
-airf_geo.x_spar = x_spar - Cx;      % x-coordinates of spars (rel to centroid)
-airf_geo.L_boomU = L_skinU;         % length between each upper surface boom
-airf_geo.L_boomL = L_skinL;         % length between each lower surface boom
-airf_geo.h_spar  = h_spar;          % height of each spar
-airf_geo.i_spar  = i_spar;          % index of each spar
-airf_geo.dx      = dx;              % change in x (m)
+x  = x  - Cx;              % x-coordinates (relative to centroid)
+xU = xU - Cx;              % x-coordinates of upper surface booms (rel to centroid)
+yU = yU - Cy;              % y-coordinates of upper surface booms (rel to centroid)
+xL = xL - Cx;              % x-coordiantes of lower surface booms (rel to centroid)
+yL = yL - Cy;              % y-coordinates of lower surface booms (rel to centroid)
+x_strU = x_strU - Cx;      % x-coordinates of upper stringers (rel to centroid)
+x_strL = x_strL - Cx;      % x-coordinates of lower strings (rel to centroid)
+x_spar = x_spar - Cx;      % x-coordinates of spars (rel to centroid)
+
+%% export outputs
+airf_geo.x  = x;               % x-coordinates (relative to centroid)
+airf_geo.xU = xU;              % x-coordinates of upper surface booms (rel to centroid)
+airf_geo.yU = yU;              % y-coordinates of upper surface booms (rel to centroid)
+airf_geo.xL = xL;              % x-coordiantes of lower surface booms (rel to centroid)
+airf_geo.yL = yL;              % y-coordinates of lower surface booms (rel to centroid)
+airf_geo.x_strU = x_strU;      % x-coordinates of upper stringers (rel to centroid)
+airf_geo.x_strL = x_strL;      % x-coordinates of lower strings (rel to centroid)
+airf_geo.x_spar = x_spar;      % x-coordinates of spars (rel to centroid)
+airf_geo.L_boomU = L_skinU;    % length between each upper surface boom
+airf_geo.L_boomL = L_skinL;    % length between each lower surface boom
+airf_geo.h_spar  = h_spar;     % height of each spar
+airf_geo.i_spar  = i_spar;     % index of each spar
+airf_geo.dx      = dx;         % change in x (m)
 
 if PLOT_AIRFOIL
     afc = figure();
@@ -276,7 +295,9 @@ if PLOT_AIRFOIL
     ylim([-0.3 0.3])
     hold on; grid on;
     plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
-    plot([x_spar(1),x_spar(1)],[yU(i_spar(1)),yL(i_spar(1))],'b',[x_spar(2),x_spar(2)],[yU(i_spar(2)),yL(i_spar(2))],'b',[x(end),x(end)]-Cx,[yU(end),yL(end)],'b','Linewidth',3);
+    for i = 1:length(x_spar)
+        plot([x_spar(i),x_spar(i)],[yU(i_spar(i)),yL(i_spar(i))],'b','Linewidth',3)
+    end
     plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
     scatter(Cx-Cx,Cy-Cy,'m*')
     title('NACA 2415 Normalized to Centroid','fontsize',14);

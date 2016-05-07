@@ -102,30 +102,25 @@ BL(ind_strL) = A_str;
 BL(ind_capL(1:end-1)) = BL(ind_capL(1:end-1))+2*A_cap;
 
 BL(2:end-1) = BL(2:end-1)...
-              + t_skin*L_boomL(1:end-1)/6.*(2+sz_RBL(1:end-2)./sz_RBL(2:end-1))...
-              + t_skin*L_boomL(2:end)/6.*(2+sz_RBL(3:end)./sz_RBL(2:end-1));
-
+              + t_skin*L_boomL(1:end-1)/6*(2*sz_RBL(1:end-2)/sz_RBL(2:end-1)...
+              + t_skin*L_boomL(2:end)/6*(2*sz_RBL(3:end)/sz_RBL(2:end-1);
+% 
 % for i = 2:nBL-1
 %     BL(i) = BL(i) + t_skin*L_boomL(i-1)/6*(2+sz_RBL(i-1)/sz_RBL(i)) + t_skin*L_boomL(i)/6*(2+sz_RBL(i+1)/sz_RBL(i));
 % end
 BL(end) = BL(end) + t_skin*L_boomL(end)/6*(2+sz_RBL(end-1)/sz_RBL(end));
 
 % the first stringer shared by upper and lower surface
-BU(1) = BU(1) ...
-       + t_skin*L_boomU(1)/6*(2+sz_RBU(2)/sz_RBU(1)) ...
-       + t_skin*L_boomL(1)/6*(2+sz_RBL(2)/sz_RBL(1));
+BU(1) = BU(1) + t_skin*L_boomU(1)/6*(2+sz_RBU(2)/sz_RBU(1)) + t_skin*L_boomL(1)/6*(2+sz_RBL(2)/sz_RBL(1));
 BL(1) = BU(1);
 
 % add the contribution of spars
 % index for spar location
-BU(ind_capU) = BU(ind_capU) + t_spar*h_spar/6.*(2+sz_RBL(ind_capL)./sz_RBU(ind_capU));
-BL(ind_capU) = BL(ind_capU) + t_spar*h_spar/6.*(2+sz_RBU(ind_capU)./sz_RBL(ind_capL));
+BU(ind_capU) = BU(ind_capU) + t_spar*h_spar(i)/
+for i = 1:2
+    BU(i_BsparU(i)) = BU(i_BsparU(i)) + t_spar*h_spar(i)/6*(2+sz_RBL(i_BsparL(i))/sz_RBU(i_BsparU(i)));
+    BL(i_BsparL(i)) = BL(i_BsparL(i)) + t_spar*h_spar(i)/6*(2+sz_RBU(i_BsparU(i))/sz_RBL(i_BsparL(i)));
+end
 
-% for i = 1:2
-%     BU(i_BsparU(i)) = BU(i_BsparU(i)) + t_spar*h_spar(i)/6*(2+sz_RBL(i_BsparL(i))/sz_RBU(i_BsparU(i)));
-%     BL(i_BsparL(i)) = BL(i_BsparL(i)) + t_spar*h_spar(i)/6*(2+sz_RBU(i_BsparU(i))/sz_RBL(i_BsparL(i)));
-% end
-
-output_args = 1;
 end
 
