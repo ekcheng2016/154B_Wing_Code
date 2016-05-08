@@ -3,7 +3,7 @@ close all;
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
-PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
+PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
 PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
 PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
 
@@ -94,8 +94,9 @@ for ii = 1:length(n_allow_slvl.n)
         
         % calculate shear flow
         temp_output(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
-                                moment_slvl(ii).Mx0, moment_slvl(ii).My0);             
-                                
+                                moment_slvl(ii).Mx0, moment_slvl(ii).My0,...
+                                shear_slvl(ii).Sx0, shear_slvl(ii).Sy0);             
+        
         % PLOT
         if PLOT_PREVIOUS
         sx_fig = figure(106);

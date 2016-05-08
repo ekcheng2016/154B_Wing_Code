@@ -4,7 +4,8 @@
 %   This calculates the shear flow of the wing
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [ output_args ] = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,Mx0,My0)
+function [ output_args ] = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,Mx0,My0,...
+                                Sx,Sy)
 
 % dereference airfoil geometry structure
 x       = airf_geo.x;
@@ -121,11 +122,33 @@ BL(1) = BU(1);
 BU(ind_capU) = BU(ind_capU) + t_spar*h_spar/6.*(2+sz_RBL(ind_capL)./sz_RBU(ind_capU));
 BL(ind_capU) = BL(ind_capU) + t_spar*h_spar/6.*(2+sz_RBU(ind_capU)./sz_RBL(ind_capL));
 
+% combine top and bottom (start from top right, go counter clockwise)
+B_total = [fliplr(BU), BL(2:end)];
+xB_total = [fliplr(x_boomU), x_boomL(2:end)];
+yB_total = [fliplr(y_boomU), y_boomL(2:end)];
+
 % for i = 1:2
 %     BU(i_BsparU(i)) = BU(i_BsparU(i)) + t_spar*h_spar(i)/6*(2+sz_RBL(i_BsparL(i))/sz_RBU(i_BsparU(i)));
 %     BL(i_BsparL(i)) = BL(i_BsparL(i)) + t_spar*h_spar(i)/6*(2+sz_RBU(i_BsparU(i))/sz_RBL(i_BsparL(i)));
 % end
 
+% Calculate shear flow (LECTURE 4C pg 11)
+K1 = (Sx(1)*Ixx-Sy(1)*Ixy)/(Ixx*Iyy-Ixy^2);
+K2 = (Sy(1)*Iyy-Sx(1)*Ixy)/(Ixx*Iyy-Ixy^2);
+
+qs_temp = 0;
+
+for ii = 1:length(B_total)
+    qs_temp = qs_temp - K1*B_total(ii)*xB_total(ii) - K2*B_total(ii)*yB_total(ii);
+    qs(ii) = qs_temp;
+end
+
+figure()
+plot(qs)
+title('Shear Flow')
+xlabel('boom index (counterclockwise'), ylabel('shear flow');
+
 output_args = 1;
+
 end
 
