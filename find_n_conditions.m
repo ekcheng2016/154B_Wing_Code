@@ -2,7 +2,7 @@
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [AoA,Cd] = find_n_conditions(n,V,rho,S,naca2415,wgt_max)
+function [AoA,Cd,CM] = find_n_conditions(n,V,rho,S,naca2415,wgt_max)
     CL = (2*n*wgt_max)/(rho*V^2*S);
     
     tmp = abs(naca2415.CL-CL);
@@ -13,4 +13,5 @@ function [AoA,Cd] = find_n_conditions(n,V,rho,S,naca2415,wgt_max)
 
     AoA = naca2415.alpha(idx);
     Cd  = naca2415.Cd(idx);
+    CM  = naca2415.CM(idx);
 end

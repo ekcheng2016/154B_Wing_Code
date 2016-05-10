@@ -110,12 +110,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
     if(ngustpos_full(PHAA_ind) < npos_full(PHAA_ind))
         n_allow.name(1) = cellstr('PHAA');
         n_allow.n(1)    = npos_full(PHAA_ind);
-        [n_allow.AoA(1) n_allow.Cd(1)] = find_n_conditions(npos_full(PHAA_ind),...
+        [n_allow.AoA(1) n_allow.Cd(1) n_allow.CM(1)] = find_n_conditions(npos_full(PHAA_ind),...
                             v_plot(PHAA_ind),rho,S,naca2415,wgt_max);
     else
         n_allow.name(1) = cellstr('PHAA (Gust)');
         n_allow.n(1)    = ngustpos_full(PHAA_ind);
-        [n_allow.AoA(1) n_allow.Cd(1)] = find_n_conditions(ngustpos_full(PHAA_ind),...
+        [n_allow.AoA(1) n_allow.Cd(1) n_allow.CM(1)] = find_n_conditions(ngustpos_full(PHAA_ind),...
                             v_plot(PHAA_ind),rho,S,naca2415,wgt_max);    
     end
     n_allow.V(1)    = v_plot(PHAA_ind);
@@ -124,12 +124,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
     if(ngustpos_full(PLAA_ind) < npos_full(PLAA_ind))
         n_allow.name(2) = cellstr('PLAA');
         n_allow.n(2)    = npos_full(PLAA_ind);
-        [n_allow.AoA(2) n_allow.Cd(2)] = find_n_conditions(npos_full(PLAA_ind),...
+        [n_allow.AoA(2) n_allow.Cd(2) n_allow.CM(2)] = find_n_conditions(npos_full(PLAA_ind),...
                             v_plot(PLAA_ind),rho,S,naca2415,wgt_max);
     else
         n_allow.name(2) = cellstr('PLAA (Gust)');
         n_allow.n(2)    = ngustpos_full(PLAA_ind);
-        [n_allow.AoA(2) n_allow.Cd(2)] = find_n_conditions(ngustpos_full(PLAA_ind),...
+        [n_allow.AoA(2) n_allow.Cd(2) n_allow.CM(2)] = find_n_conditions(ngustpos_full(PLAA_ind),...
                             v_plot(PLAA_ind),rho,S,naca2415,wgt_max);        
     end
     n_allow.V(2)    = v_plot(PLAA_ind);
@@ -138,12 +138,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
     if(ngustneg_full(NHAA_ind) > nneg_full(NLAA_ind))
         n_allow.name(3) = cellstr('NHAA');
         n_allow.n(3)    = nneg_full(NHAA_ind);
-        [n_allow.AoA(3) n_allow.Cd(3)] = find_n_conditions(nneg_full(NHAA_ind),...
+        [n_allow.AoA(3) n_allow.Cd(3) n_allow.CM(3)] = find_n_conditions(nneg_full(NHAA_ind),...
                             v_plot(NHAA_ind),rho,S,naca2415,wgt_max);    
     else
         n_allow.name(3) = cellstr('NHAA (Gust)');
         n_allow.n(3)    = ngustneg_full(NHAA_ind);
-        [n_allow.AoA(3) n_allow.Cd(3)] = find_n_conditions(ngustneg_full(NHAA_ind),...
+        [n_allow.AoA(3) n_allow.Cd(3) n_allow.CM(3)] = find_n_conditions(ngustneg_full(NHAA_ind),...
                             v_plot(NHAA_ind),rho,S,naca2415,wgt_max);        
     end
     n_allow.V(3)    = v_plot(NHAA_ind);
@@ -152,12 +152,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
     if(ngustneg_full(NLAA_ind) > nneg_full(NLAA_ind))
         n_allow.name(4) = cellstr('NLAA');
         n_allow.n(4)    = nneg_full(NLAA_ind);
-        [n_allow.AoA(4) n_allow.Cd(4)] = find_n_conditions(nneg_full(NLAA_ind),...
+        [n_allow.AoA(4) n_allow.Cd(4) n_allow.CM(4)] = find_n_conditions(nneg_full(NLAA_ind),...
                             v_plot(NLAA_ind),rho,S,naca2415,wgt_max);    
     else
         n_allow.name(4) = cellstr('V_{cruise} Gust Load');
         n_allow.n(4)    = ngustneg_full(NLAA_ind);
-        [n_allow.AoA(4) n_allow.Cd(4)] = find_n_conditions(ngustneg_full(NLAA_ind),...
+        [n_allow.AoA(4) n_allow.Cd(4) n_allow.CM(4)] = find_n_conditions(ngustneg_full(NLAA_ind),...
                             v_plot(NLAA_ind),rho,S,naca2415,wgt_max);    
     end
     n_allow.V(4)    = v_plot(NLAA_ind);
@@ -166,12 +166,12 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
     if(ngustneg_full(end) > nneg_full(end))
         n_allow.name(5) = cellstr('NLAA');
         n_allow.n(5)    = nneg_full(end);
-        [n_allow.AoA(5) n_allow.Cd(5)] = find_n_conditions(nneg_full(end),...
+        [n_allow.AoA(5) n_allow.Cd(5) n_allow.CM(5)] = find_n_conditions(nneg_full(end),...
                     v_plot(end),rho,S,naca2415,wgt_max);    
     else
         n_allow.name(5) = cellstr('V_{dive} Gust Load');
         n_allow.n(5)    = ngustneg_full(end);
-        [n_allow.AoA(5) n_allow.Cd(5)] = find_n_conditions(ngustneg_full(end),...
+        [n_allow.AoA(5) n_allow.Cd(5) n_allow.CM(5)] = find_n_conditions(ngustneg_full(end),...
                     v_plot(end),rho,S,naca2415,wgt_max);    
     end
     n_allow.V(5)    = v_plot(end);
@@ -181,13 +181,14 @@ function [ n_allow ] = calc_flgt_envel(naca2415,rho,text,plot_switch)
             (NLAA_ind > PHAA_ind))
         n_allow.name(6) = cellstr('V_{cruise} Gust Load');
         n_allow.n(6)    = ngustpos_full(NLAA_ind);
-        [n_allow.AoA(6) n_allow.Cd(6)] = find_n_conditions(ngustpos_full(NLAA_ind),...
+        [n_allow.AoA(6) n_allow.Cd(6) n_allow.CM(6)] = find_n_conditions(ngustpos_full(NLAA_ind),...
             v_plot(NLAA_ind),rho,S,naca2415,wgt_max);    
     else
         n_allow.name(6) = cellstr('');
         n_allow.n(6)    = NaN;
         n_allow.AoA(6)  = NaN;
         n_allow.Cd(6)   = NaN;
+        n_allow.CM(6)   = NaN;
     end
     n_allow.V(6)    = v_plot(NLAA_ind);
 

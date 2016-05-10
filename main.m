@@ -1,4 +1,4 @@
-clear all; 
+%clear all; 
 close all; 
 clc;
 
@@ -52,7 +52,7 @@ for ii = 1:length(n_allow_slvl.n)
         % DETERMINE LOAD DISTRIBUTION
         [load_slvl(ii)] = calc_wxwy(n_allow_slvl.n(ii),rho_sealvl,...
                                     n_allow_slvl.V(ii),n_allow_slvl.AoA(ii),...
-                                    n_allow_slvl.Cd(ii),nz);
+                                    n_allow_slvl.Cd(ii),n_allow_slvl.CM(ii),nz);
         
         %PLOT DISTRIBUTIONS
         if PLOT_PREVIOUS
@@ -95,7 +95,8 @@ for ii = 1:length(n_allow_slvl.n)
         % calculate shear flow
         temp_output(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
                                 moment_slvl(ii).Mx0, moment_slvl(ii).My0,...
-                                shear_slvl(ii).Sx0, shear_slvl(ii).Sy0);             
+                                shear_slvl(ii).Sx0, shear_slvl(ii).Sy0,...
+                                load_slvl(ii).M0,c,Cx,Cy);             
         
         % PLOT
         if PLOT_PREVIOUS
@@ -236,7 +237,7 @@ for ii = 1:length(n_allow_ceil.n)
         % DETERMINE LOAD DISTRIBUTION
         [load_ceil(ii)] = calc_wxwy(n_allow_ceil.n(ii),rho_altceil,...
                                     n_allow_ceil.V(ii),n_allow_ceil.AoA(ii),...
-                                    n_allow_ceil.Cd(ii),nz);
+                                    n_allow_ceil.Cd(ii),n_allow_ceil.CM(ii),nz);
         
         %PLOT DISTRIBUTIONS
         if PLOT_PREVIOUS

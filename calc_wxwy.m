@@ -18,7 +18,7 @@
 %   wx  : force distribution in the x-direction from tip to root  (N/m)
 %   wy  : force distribution in the y-direction from tip to root  (N/m)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [load] = calc_wxwy(n,rho,V,AoA,Cd,nz)
+function [load] = calc_wxwy(n,rho,V,AoA,Cd,CM,nz)
 load_aircraft_parameters;
 load_conversions;
 
@@ -27,6 +27,8 @@ W = wgt_max;                            % N          weight
 L = n*W;                                 % N          lift
 CL = 2*L/rho/V^2/S;                      %            lift coefficient
 D = 0.5*rho*V^2*S*(Cd + CL^2/pi/AR/e);   % N          drag 
+
+M0 = 0.5*rho*V^2*S*CM*c;
 
 z = 0:b/2/nz:b/2;                        % root to tip (half span)
 
@@ -65,3 +67,4 @@ load.l_ellip = l_ellip;
 load.l_rect  = l_rect;
 load.l       = l;
 load.d       = d;
+load.M0      = M0;
