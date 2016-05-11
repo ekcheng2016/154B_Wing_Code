@@ -12,18 +12,20 @@ x       = airf_geo.x;
 dx      = airf_geo.dx;
 yU      = airf_geo.yU;
 yL      = airf_geo.yL;
-x_boomU = airf_geo.xU;
-x_boomL = airf_geo.xL;
-y_boomU = airf_geo.y_skinU;
-y_boomL = airf_geo.y_skinL;
-%y_boomU = airf_geo.yU;
-%y_boomL = airf_geo.yL; 
-L_boomU = airf_geo.L_boomU;
-L_boomL = airf_geo.L_boomL;
-%L_boomU = sqrt((airf_geo.xU(1:end-1)-airf_geo.xU(2:end)).^2+...
-%                (airf_geo.yU(1:end-1)-airf_geo.yU(2:end)).^2);
-%L_boomL = sqrt((airf_geo.xL(1:end-1)-airf_geo.xL(2:end)).^2+...
-%                (airf_geo.yL(1:end-1)-airf_geo.yL(2:end)).^2);
+x_boomU = airf_geo.x;        % THIS IS FOR MORE BOOMS
+x_boomL = airf_geo.x;        % THIS IS FOR MORE BOOMS
+%x_boomU = airf_geo.xU;      % THIS IS FOR LESS BOOMS
+%x_boomL = airf_geo.xL;      % THIS IS FOR LESS BOOMS
+%y_boomU = airf_geo.y_skinU; % THIS IS FOR LESS BOOMS
+%y_boomL = airf_geo.y_skinL; % THIS IS FOR LESS BOOMS
+y_boomU = airf_geo.yU;       % THIS IS FOR MORE BOOMS
+y_boomL = airf_geo.yL;       % THIS IS FOR MORE BOOMS
+%L_boomU = airf_geo.L_boomU; % THIS IS FOR LESS BOOMS
+%L_boomL = airf_geo.L_boomL; % THIS IS FOR LESS BOOMS
+L_boomU = sqrt((x_boomU(1:end-1)-x_boomU(2:end)).^2+...
+                (y_boomU(1:end-1)-y_boomU(2:end)).^2);  % MORE BOOMS
+L_boomL = sqrt((x_boomL(1:end-1)-x_boomL(2:end)).^2+...
+                (y_boomL(1:end-1)-y_boomL(2:end)).^2);  % MORE BOOMS
 x_strU  = airf_geo.x_strU;
 x_strL  = airf_geo.x_strL;
 x_spar  = airf_geo.x_spar;
