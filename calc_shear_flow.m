@@ -56,18 +56,21 @@ end
 BU = zeros(1,nBU);
 
 BU(ind_strU) = A_str; % add stringer area
-BU(ind_capU(1:end-1)) = BU(ind_capU(1:end-1))+2*A_cap; % add 2 spar caps area
-BU(ind_capU(end))     = BU(ind_capU(end))+A_cap;   % add 1 spar caps for last spar
+% BU(ind_capU(1:end-1)) = BU(ind_capU(1:end-1))+2*A_cap; % add 2 spar caps area
+BU(ind_capU(1:end-1)) = 2*A_cap;
+% BU(ind_capU(end))     = BU(ind_capU(end))+A_cap;   % add 1 spar caps for last spar
+BU(ind_capU(end))     = A_cap;
 
-BU(2:end-1) = BU(2:end-1) ...
-            + t_skin*L_boomU(1:end-1)/6.*(2+sz_RBU(1:end-2)./sz_RBU(2:end-1)) ...
-            + t_skin*L_boomU(2:end)/6.*(2+sz_RBU(3:end)./sz_RBU(2:end-1));
+BU(2:nBU-1) = BU(2:nBU-1) ...
+            + t_skin*L_boomU(1:nBU-2)/6.*(2+sz_RBU(1:nBU-2)./sz_RBU(2:nBU-1)) ...
+            + t_skin*L_boomU(2:nBU-1)/6.*(2+sz_RBU(3:nBU)./sz_RBU(2:nBU-1));
         
 % ^above replace below
 % for i = 2:nBU-1
 %     BU(i) = BU(i) + t_skin*L_boomU(i-1)/6*(2+sz_RBU(i-1)/sz_RBU(i)) + t_skin*L_boomU(i)/6*(2+sz_RBU(i+1)/sz_RBU(i));
 % end
-BU(end) = BU(end) + t_skin*L_boomU(end)/6*(2+sz_RBU(end-1)/sz_RBU(end));
+% BU(end) = BU(end) + t_skin*L_boomU(end)/6*(2+sz_RBU(end-1)/sz_RBU(end));
+BU(end) = BU(end) + t_skin*L_boomU(end-1)/6*(2+sz_RBU(end-1)/sz_RBU(end));
 
 
 % boom area lower part
@@ -100,16 +103,19 @@ end
 
 BL = zeros(1,nBL);
 BL(ind_strL) = A_str;
-BL(ind_capL(1:end-1)) = BL(ind_capL(1:end-1))+2*A_cap;
+%BL(ind_capL(1:end-1)) = BL(ind_capL(1:end-1))+2*A_cap;
+BL(ind_capL(1:end-1)) = 2*A_cap;
+%BL(ind_capL(end))     = BL(ind_capL(end))+A_cap;   % add 1 spar caps for last spar
+BL(ind_capL(end))     = A_cap;
 
-BL(2:end-1) = BL(2:end-1)...
-              + t_skin*L_boomL(1:end-1)/6.*(2+sz_RBL(1:end-2)./sz_RBL(2:end-1))...
-              + t_skin*L_boomL(2:end)/6.*(2+sz_RBL(3:end)./sz_RBL(2:end-1));
+BL(2:nBL-1) = BL(2:nBL-1)...
+              + t_skin*L_boomL(1:nBL-2)/6.*(2+sz_RBL(1:nBL-2)./sz_RBL(2:nBL-1))...
+              + t_skin*L_boomL(2:nBL-1)/6.*(2+sz_RBL(3:nBL)./sz_RBL(2:nBL-1));
 
 % for i = 2:nBL-1
 %     BL(i) = BL(i) + t_skin*L_boomL(i-1)/6*(2+sz_RBL(i-1)/sz_RBL(i)) + t_skin*L_boomL(i)/6*(2+sz_RBL(i+1)/sz_RBL(i));
 % end
-BL(end) = BL(end) + t_skin*L_boomL(end)/6*(2+sz_RBL(end-1)/sz_RBL(end));
+BL(end) = BL(end) + t_skin*L_boomL(end-1)/6*(2+sz_RBL(end-1)/sz_RBL(end));
 
 % the first stringer shared by upper and lower surface
 BU(1) = BU(1) ...
@@ -267,7 +273,6 @@ plot(qb)
 title('Shear Flow')
 xlabel('boom index (counterclockwise'), ylabel('shear flow');
 
-output_args = 1;
 
 end
 
