@@ -53,9 +53,9 @@ x = 0:dx:c;         % even spacing
 
 yc = zeros(1,n+1);
 yt = zeros(1,n+1);
-xU0 = zeros(1,n+1);
+%xU0 = zeros(1,n+1);
 yU0 = zeros(1,n+1);
-xL0 = zeros(1,n+1);
+%xL0 = zeros(1,n+1);
 yL0 = zeros(1,n+1);
 theta = zeros(1,n+1);
 xb = p*c;
@@ -76,20 +76,21 @@ for i = 1:n+1
     
     % U == upper surface x,y coordinates
     % L == lower surface x,y, coordinates
-    xU0(i) = x(i) - yt(i)*sin(theta(i));
+%    xU0(i) = x(i) - yt(i)*sin(theta(i));
     yU0(i) = yc(i) + yt(i)*cos(theta(i));
-    xL0(i) = x(i) + yt(i)*sin(theta(i));
+%    xL0(i) = x(i) + yt(i)*sin(theta(i));
     yL0(i) = yc(i) - yt(i)*cos(theta(i));
 end
+
 
 % The last 25% of the chord length of the airfoil was neglected under the assumption that
 % this section contained flaps and ailerons, and would therefore not support aerodynamic loads.
 
 i_xend = round(0.75*c/dx)+1;
 x = x(1:i_xend);
-xU = xU0(1:i_xend);
+%xU = xU0(1:i_xend);
 yU = yU0(1:i_xend);
-xL = xL0(1:i_xend);
+%xL = xL0(1:i_xend);
 yL = yL0(1:i_xend);
 
 % Here the airfoil profile is approximated by assuming xU0=x & xL0=x.
@@ -109,15 +110,35 @@ n_strL = length(x_strL);
 i_strL = round(x_strL./dx)+1;
 
 % skins
-x_skinU = [x_spar,x_strU];
-x_skinU = sort(x_skinU);
+% nodes include spar caps and stringers
+x_nodeU = [x_spar,x_strU];
+x_nodeU = sort(x_nodeU);
+y_nodeU = zeros(1,length(x_nodeU));
+for i = 1:length(x_nodeU)
+   [Y, ind] = min(abs(x_nodeU(i)-x));
+   y_nodeU(i) =  yU(ind);
+end
+
+% skin should be broken into smaller elements for higher accuracy of calculation
+% break one skin element into two by adding one more node in between
+x_skinU = zeros(1,2*length(x_nodeU)-1);
+y_skinU = zeros(1,length(x_skinU));
+for i = 1:length(x_nodeU)-1
+    x_skinU(2*i-1) = x_nodeU(i);
+    y_skinU(2*i-1) = y_nodeU(i);
+    x_skinU(2*i) = (x_nodeU(i) + x_nodeU(i+1))/2;
+    [Y,ind] = min(abs(x_skinU(2*i)-x));
+    y_skinU(2*i) = yU(ind);
+end
+x_skinU(end) = x_nodeU(end);
+y_skinU(end) = y_nodeU(end);
+
 i_skinU = round(x_skinU/dx)+1;
 n_skinU = length(x_skinU)-1;
 L_skinU = zeros(1,n_skinU);
 A_skinU = zeros(1,n_skinU);
 Cx_skinU = zeros(1,n_skinU);
 Cy_skinU = zeros(1,n_skinU);
-
 for i = 1:n_skinU
     L_skinU(i) = sqrt((yU(i_skinU(i+1)) - yU(i_skinU(i)))^2 + (x_skinU(i+1) - x_skinU(i))^2);
     A_skinU(i) = t_skin*L_skinU(i);
@@ -125,8 +146,27 @@ for i = 1:n_skinU
     Cy_skinU(i) = (yU(i_skinU(i+1)) + yU(i_skinU(i)))/2;
 end
 
-x_skinL = [x_spar,x_strL];
-x_skinL = sort(x_skinL);
+% lower part
+x_nodeL = [x_spar,x_strL];
+x_nodeL = sort(x_nodeL);
+y_nodeL = zeros(1,length(x_nodeL));
+for i = 1:length(x_nodeL)
+   [Y, ind] = min(abs(x_nodeL(i)-x));
+   y_nodeL(i) =  yL(ind);
+end
+
+x_skinL = zeros(1,2*length(x_nodeL)-1);
+y_skinL = zeros(1,length(x_skinL));
+for i = 1:length(x_nodeL)-1
+    x_skinL(2*i-1) = x_nodeL(i);
+    y_skinL(2*i-1) = y_nodeL(i);
+    x_skinL(2*i) = (x_nodeL(i) + x_nodeL(i+1))/2;
+    [Y,ind] = min(abs(x_skinL(2*i)-x));
+    y_skinL(2*i) = yL(ind);
+end
+x_skinL(end) = x_nodeL(end);
+y_skinL(end) = y_nodeL(end);
+
 i_skinL = round(x_skinL/dx)+1;
 n_skinL = length(x_skinL)-1;
 L_skinL = zeros(1,n_skinL);
@@ -139,6 +179,7 @@ for i = 1:n_skinL
     Cx_skinL(i) = (x_skinL(i+1) + x_skinL(i))/2;
     Cy_skinL(i) = (yL(i_skinL(i+1)) + yL(i_skinL(i)))/2;
 end
+
 
 %% centroid of the wing section
 Cx_sum = 0;
@@ -266,9 +307,11 @@ end
 
 %% convert coordinates to centroid as origin
 x  = x  - Cx;              % x-coordinates (relative to centroid)
-xU = xU - Cx;              % x-coordinates of upper surface booms (rel to centroid)
+x_skinU = x_skinU - Cx;    % x-coordinates of upper surface booms (rel to centroid)
+y_skinU = y_skinU - Cy;
 yU = yU - Cy;              % y-coordinates of upper surface booms (rel to centroid)
-xL = xL - Cx;              % x-coordiantes of lower surface booms (rel to centroid)
+x_skinL = x_skinL - Cx;    % x-coordiantes of lower surface booms (rel to centroid)
+y_skinL = y_skinL - Cy;
 yL = yL - Cy;              % y-coordinates of lower surface booms (rel to centroid)
 x_strU = x_strU - Cx;      % x-coordinates of upper stringers (rel to centroid)
 x_strL = x_strL - Cx;      % x-coordinates of lower strings (rel to centroid)
@@ -276,10 +319,14 @@ x_spar = x_spar - Cx;      % x-coordinates of spars (rel to centroid)
 
 %% export outputs
 airf_geo.x  = x;               % x-coordinates (relative to centroid)
-airf_geo.xU = xU;              % x-coordinates of upper surface booms (rel to centroid)
+airf_geo.xU = x_skinU;              % x-coordinates of upper surface booms (rel to centroid)
+airf_geo.y_skinU = y_skinU;
 airf_geo.yU = yU;              % y-coordinates of upper surface booms (rel to centroid)
-airf_geo.xL = xL;              % x-coordiantes of lower surface booms (rel to centroid)
+airf_geo.xL = x_skinL;              % x-coordiantes of lower surface booms (rel to centroid)
+airf_geo.y_skinL = y_skinL;
 airf_geo.yL = yL;              % y-coordinates of lower surface booms (rel to centroid)
+airf_geo.L_skinU = L_skinU;    
+airf_geo.L_skinL = L_skinL;
 airf_geo.x_strU = x_strU;      % x-coordinates of upper stringers (rel to centroid)
 airf_geo.x_strL = x_strL;      % x-coordinates of lower strings (rel to centroid)
 airf_geo.x_spar = x_spar;      % x-coordinates of spars (rel to centroid)
@@ -291,9 +338,10 @@ airf_geo.dx      = dx;         % change in x (m)
 
 if PLOT_AIRFOIL
     afc = figure();
-    plot(xU,yU,'k',xL,yL,'k','Linewidth',2);
-    ylim([-0.3 0.3])
+    plot(x,yU,'k',x,yL,'k','Linewidth',2);
     hold on; grid on;
+  %  plot(x,yU,'xb',x,yL,'xb');
+    ylim([-0.3 0.3])
     plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
     for i = 1:length(x_spar)
         plot([x_spar(i),x_spar(i)],[yU(i_spar(i)),yL(i_spar(i))],'b','Linewidth',3)

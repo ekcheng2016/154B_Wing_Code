@@ -10,14 +10,20 @@ function [ output_args ] = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,Mx0,My0,...
 % dereference airfoil geometry structure
 x       = airf_geo.x;
 dx      = airf_geo.dx;
+yU      = airf_geo.yU;
+yL      = airf_geo.yL;
 x_boomU = airf_geo.xU;
 x_boomL = airf_geo.xL;
-y_boomU = airf_geo.yU;
-y_boomL = airf_geo.yL; 
-L_boomU = sqrt((airf_geo.xU(1:end-1)-airf_geo.xU(2:end)).^2+...
-                (airf_geo.yU(1:end-1)-airf_geo.yU(2:end)).^2);
-L_boomL = sqrt((airf_geo.xL(1:end-1)-airf_geo.xL(2:end)).^2+...
-                (airf_geo.yL(1:end-1)-airf_geo.yL(2:end)).^2);
+y_boomU = airf_geo.y_skinU;
+y_boomL = airf_geo.y_skinL;
+%y_boomU = airf_geo.yU;
+%y_boomL = airf_geo.yL; 
+L_boomU = airf_geo.L_boomU;
+L_boomL = airf_geo.L_boomL;
+%L_boomU = sqrt((airf_geo.xU(1:end-1)-airf_geo.xU(2:end)).^2+...
+%                (airf_geo.yU(1:end-1)-airf_geo.yU(2:end)).^2);
+%L_boomL = sqrt((airf_geo.xL(1:end-1)-airf_geo.xL(2:end)).^2+...
+%                (airf_geo.yL(1:end-1)-airf_geo.yL(2:end)).^2);
 x_strU  = airf_geo.x_strU;
 x_strL  = airf_geo.x_strL;
 x_spar  = airf_geo.x_spar;
@@ -137,7 +143,7 @@ LB_total = [fliplr(L_boomU), L_boomL, h_spar(2)];
 figure()
 plot(xB_total,yB_total,'ro','markersize',6);
 hold on
-plot(x,y_boomU,'k',x,y_boomL,'k','linewidth',1.5);
+plot(x,yU,'k',x,yL,'k','linewidth',1.5);
 plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
 ylim([-0.3 0.3]) 
 xlabel('x (m)')

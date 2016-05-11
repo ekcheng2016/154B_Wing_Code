@@ -34,8 +34,8 @@ airf_geo.t_spar = 0.0025;   % m
 airf_geo.t_skin = 0.001016;  % m
 % % locations of spars, spar caps and stringers (nose at the origin of the coordinate)
 airf_geo.x_spar0 = 0.25*c;                 % front spar (2 cell beam)
-airf_geo.x_strU0 = [0.05 0.15 0.35 0.55 0.65]*c; % upper surface
-airf_geo.x_strL0 = [0.05 0.15 0.35 0.55 0.65]*c; % lower surface
+airf_geo.x_strU0 = [0.01 0.05 0.15 0.35 0.55 0.65]*c; % upper surface
+airf_geo.x_strL0 = [0.01 0.05 0.15 0.35 0.55 0.65]*c; % lower surface
 % % new coordinate with origin at the centroid is used for the output below
 [Cx,Cy,Ixx,Iyy,Ixy,airf_geo] = ...
     airfoil_section(c,airf_geo,PLOT_AIRFOIL);
