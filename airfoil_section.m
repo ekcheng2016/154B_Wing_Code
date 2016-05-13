@@ -151,14 +151,14 @@ end
 x_nodeL = [x_spar,x_strL];
 x_nodeL = sort(x_nodeL);
 y_nodeL = zeros(1,length(x_nodeL));
-for i = 1:length(x_nodeL)
+for i = 2:length(x_nodeL)
    [Y, ind] = min(abs(x_nodeL(i)-x));
    y_nodeL(i) =  yL(ind);
 end
 
 x_skinL = zeros(1,2*length(x_nodeL)-1);
 y_skinL = zeros(1,length(x_skinL));
-for i = 1:length(x_nodeL)-1
+for i = 2:length(x_nodeL)-1
     x_skinL(2*i-1) = x_nodeL(i);
     y_skinL(2*i-1) = y_nodeL(i);
     x_skinL(2*i) = (x_nodeL(i) + x_nodeL(i+1))/2;
@@ -174,7 +174,7 @@ L_skinL = zeros(1,n_skinL);
 A_skinL = zeros(1,n_skinL);
 Cx_skinL = zeros(1,n_skinL);
 Cy_skinL = zeros(1,n_skinL);
-for i = 1:n_skinL
+for i = 2:n_skinL
     L_skinL(i) = sqrt((yL(i_skinL(i+1)) - yL(i_skinL(i)))^2 + (x_skinL(i+1) - x_skinL(i))^2);
     A_skinL(i) = t_skin*L_skinL(i);
     Cx_skinL(i) = (x_skinL(i+1) + x_skinL(i))/2;
