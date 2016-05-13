@@ -405,3 +405,9 @@ figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 print(v_fig,[pwd '/Deflection_Figures/CEIL_v'],'-djpeg','-r300');
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%                        Buckling & Fatigue                         %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+buckling = calc_buckling(I_str,sigma_zz_MAX_ceil_val); % NEED TO PASS I_stringer
