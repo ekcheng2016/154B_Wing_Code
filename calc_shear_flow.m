@@ -134,7 +134,7 @@ BL(1) = BU(1);
 % add the contribution of spars
 % index for spar location
 BU(ind_capU) = BU(ind_capU) + t_spar*h_spar/6.*(2+sz_RBL(ind_capL)./sz_RBU(ind_capU));
-BL(ind_capU) = BL(ind_capU) + t_spar*h_spar/6.*(2+sz_RBU(ind_capU)./sz_RBL(ind_capL));
+BL(ind_capL) = BL(ind_capL) + t_spar*h_spar/6.*(2+sz_RBU(ind_capU)./sz_RBL(ind_capL));
 
 % combine top and bottom (start from top right, go counter clockwise)
 B_total = [fliplr(BU), BL(2:end)];
