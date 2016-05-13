@@ -40,6 +40,9 @@ for i = 1:nz;
     My_sum(i+1) = My_sum(i) + My(i+1);
 end
 
+Sx_sum = -Sx_sum;
+Sy_sum = -Sy_sum;
+
 % z-->L-z: from root to tip
 Mx0 = zeros(1,nz+1);
 My0 = zeros(1,nz+1);

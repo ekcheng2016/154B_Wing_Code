@@ -93,7 +93,7 @@ for ii = 1:length(n_allow_slvl.n)
                                     load_slvl(ii).wx0,load_slvl(ii).wy0);
         
         % calculate shear flow
-        temp_output(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
+        temp_output(ii).out = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
                                 moment_slvl(ii).Mx0, moment_slvl(ii).My0,...
                                 shear_slvl(ii).Sx0, shear_slvl(ii).Sy0,...
                                 load_slvl(ii).M0,c,Cx,Cy);             
@@ -141,7 +141,7 @@ for ii = 1:length(n_allow_slvl.n)
         % SIGMA_ZZ AT THE ROOT
         [sigma_zz_slvl(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                                 moment_slvl(ii).Mx0(1),moment_slvl(ii).My0(1),...
-                                airf_geo.xU,airf_geo.yU,airf_geo.xL,airf_geo.yL);
+                                airf_geo.x,airf_geo.yU,airf_geo.x,airf_geo.yL);
                             
     end
 end
@@ -321,7 +321,7 @@ for ii = 1:length(n_allow_ceil.n)
         % SIGMA_ZZ AT THE ROOT
         [sigma_zz_ceil(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                             moment_ceil(ii).Mx0(1),moment_ceil(ii).My0(1),...
-                            airf_geo.xU,airf_geo.yU,airf_geo.xL,airf_geo.yL);
+                            airf_geo.x,airf_geo.yU,airf_geo.x,airf_geo.yL);
     end
 end
 

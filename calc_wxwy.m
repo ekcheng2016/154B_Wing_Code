@@ -54,8 +54,8 @@ wx0 = -sin(AoA).*l + cos(AoA).*d;
 wy = zeros(1,nz+1);
 wx = zeros(1,nz+1);
 for i = 1:nz+1
-    wy(i) = wx0(nz+2-i);
-    wx(i) = wy0(nz+2-i);
+    wy(i) = wy0(nz+2-i);
+    wx(i) = wx0(nz+2-i);
 end
 
 load.z = z;

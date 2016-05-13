@@ -89,8 +89,8 @@ i_BL = 1:nBL;
 sz_RBL = zeros(1,nBL);
 % sz_RBL(:) = Mx0(1)*(Iyy*y_boomL(i_BL(:))-Ixy*x_boomL(i_BL(:)))/(Ixx*Iyy-Ixy^2)... 
 %           + My0(1)*(Ixx*x_boomL(i_BL(:))-Ixy*y_boomL(i_BL(:)))/(Ixx*Iyy-Ixy^2);
-sz_RBL(:) = Mx0(1)*(Iyy*y_boomL-Ixy*x_boomL)/(Ixx*Iyy-Ixy^2)... 
-          + My0(1)*(Ixx*x_boomL-Ixy*y_boomL)/(Ixx*Iyy-Ixy^2);
+sz_RBL(:) = (Mx0(1)*(Iyy*y_boomL-Ixy*x_boomL)/(Ixx*Iyy-Ixy^2))... 
+          + (My0(1)*(Ixx*x_boomL-Ixy*y_boomL)/(Ixx*Iyy-Ixy^2));
 
 
 % find boom node that is closest to stringers
