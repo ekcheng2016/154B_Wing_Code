@@ -20,6 +20,7 @@
 %   Ixx:        xx-area moment of inertia         (m^4)
 %   Iyy:        yy-area moment of inertia         (m^4)
 %   Ixy:        xy-area moment of inertia         (m^4)
+%   I_str:      xx-area moment of inertia of stringer       (m^4)
 %   xU:         x-coordinate of upper surface from centroid    (m)
 %   yU:         y-coordinate of upper surface from centroid    (m)
 %   xL:         x-coordinate of lower surface from centroid    (m)
@@ -30,7 +31,7 @@
 %   h_spar:     spar heights                                   (m)
 %   i_spar:     spar indices                                   (-)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [Cx,Cy,Ixx,Iyy,Ixy,airf_geo] = ...
+function [Cx,Cy,Ixx,Iyy,Ixy,I_str,airf_geo] = ...
     airfoil_section(c,airf_geo,PLOT_AIRFOIL)
 % dereference airfoil geometry structure
 A_cap = airf_geo.A_cap;
@@ -259,6 +260,7 @@ end
 Ixx = 0;
 Iyy = 0;
 Ixy = 0;
+I_str = 0;
 
 % 3 spars
 for i = 1:2
@@ -280,6 +282,7 @@ Ixy = Ixy + A_cap*(yL(i_spar(2))-Cy)*(x_spar(2)-Cx); % lower spar cap - rear
 % upper stringers
 for i = 1:length(n_strU)
     Ixx = Ixx + A_str*(Cy_skinU(i)-Cy)^2;
+    I_str = I_str + A_str*(Cy_skinU(i)-Cy)^2;
     Iyy = Iyy + A_str*(x_strU(i)-Cx)^2;
     Ixy = Ixy + A_str*(Cy_skinU(i)-Cy)*(x_strU(i)-Cx);
 end
@@ -287,6 +290,7 @@ end
 % lower stringers
 for i = 1:length(n_strU)
     Ixx = Ixx + A_str*(Cy_skinL(i)-Cy)^2;
+    I_str = I_str + A_str*(Cy_skinU(i)-Cy)^2;
     Iyy = Iyy + A_str*(x_strL(i)-Cx)^2;
     Ixy = Ixy + A_str*(Cy_skinL(i)-Cy)*(x_strL(i)-Cx);
 end

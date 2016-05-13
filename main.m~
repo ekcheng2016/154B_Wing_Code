@@ -37,7 +37,7 @@ airf_geo.x_spar0 = 0.25*c;                 % front spar (2 cell beam)
 airf_geo.x_strU0 = [0.01 0.05 0.15 0.35 0.55 0.65]*c; % upper surface
 airf_geo.x_strL0 = [0.01 0.05 0.15 0.35 0.55 0.65]*c; % lower surface
 % % new coordinate with origin at the centroid is used for the output below
-[Cx,Cy,Ixx,Iyy,Ixy,I_str,airf_geo] = ...
+[Cx,Cy,Ixx,Iyy,Ixy,airf_geo] = ...
     airfoil_section(c,airf_geo,PLOT_AIRFOIL);
                         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -410,4 +410,4 @@ end
 %%%%                        Buckling & Fatigue                         %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-buckling = calc_buckling(I_str,sigma_zz_MAX_ceil_val,airf_geo.A_str,airf_geo.t_skin);
+buckling = calc_buckling(I_str,sigma_zz_MAX_ceil_val,airf_geo.A_str); % NEED TO PASS I_stringer
