@@ -197,11 +197,11 @@ end
 % spar caps
 for i = 1:length(x_spar)
     if i ~= length(x_spar)
-        n = 2; % 2 spar caps per spar
+        n = 2; % 2 spar caps per spar (top & bottom)
     else 
         n = 1; % 1 spar cap for most rear spar (next to control surface)
     end
-    Cx_sum = Cx_sum + x_spar(i)*n*A_cap;
+    Cx_sum = Cx_sum + 2*x_spar(i)*n*A_cap;
     Cy_sum = Cy_sum + yU(i_spar(i))*n*A_cap;
     Cy_sum = Cy_sum + yL(i_spar(i))*n*A_cap;
     A_sum  = A_sum  + 2*n*A_cap;
@@ -211,14 +211,14 @@ end
 % upper stringers
 for i = 1:length(n_strU)
     Cx_sum = Cx_sum + x_strU(i)*A_str(i);
-    Cy_sum = Cy_sum + Cy_skinU(i)*A_str(i);
+    Cy_sum = Cy_sum + yU(i_strU(i))*A_str(i);
     A_sum = A_sum + A_str(i);
 end
 
 % lower stringers
-for i = 1:length(n_strL)
+for i = 2:length(n_strL)
     Cx_sum = Cx_sum + x_strL(i)*A_str(i);
-    Cy_sum = Cy_sum + Cy_skinL(i)*A_str(i);
+    Cy_sum = Cy_sum + yL(i_strL(i))*A_str(i);
     A_sum = A_sum + A_str(i);
 end
 
@@ -281,18 +281,18 @@ Ixy = Ixy + A_cap*(yL(i_spar(2))-Cy)*(x_spar(2)-Cx); % lower spar cap - rear
    
 % upper stringers
 for i = 1:length(n_strU)
-    Ixx = Ixx + A_str*(Cy_skinU(i)-Cy)^2;
-    I_str = I_str + A_str*(Cy_skinU(i)-Cy)^2;
+    Ixx = Ixx + A_str*(yU(i_strU(i))-Cy)^2;
+    I_str = I_str + A_str*(yU(i_strU(i))-Cy)^2;
     Iyy = Iyy + A_str*(x_strU(i)-Cx)^2;
-    Ixy = Ixy + A_str*(Cy_skinU(i)-Cy)*(x_strU(i)-Cx);
+    Ixy = Ixy + A_str*(yU(i_strU(i))-Cy)*(x_strU(i)-Cx);
 end
 
 % lower stringers
-for i = 1:length(n_strU)
-    Ixx = Ixx + A_str*(Cy_skinL(i)-Cy)^2;
-    I_str = I_str + A_str*(Cy_skinU(i)-Cy)^2;
+for i = 2:length(n_strL)
+    Ixx = Ixx + A_str*(yL(i_strL(i))-Cy)^2;
+    I_str = I_str + A_str*(yL(i_strL(i))-Cy)^2;
     Iyy = Iyy + A_str*(x_strL(i)-Cx)^2;
-    Ixy = Ixy + A_str*(Cy_skinL(i)-Cy)*(x_strL(i)-Cx);
+    Ixy = Ixy + A_str*(yL(i_strL(i))-Cy)*(x_strL(i)-Cx);
 end
 
 % upper skin

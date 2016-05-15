@@ -94,10 +94,12 @@ sz_RBL(:) = (Mx0(1)*(Iyy*y_boomL-Ixy*x_boomL)/(Ixx*Iyy-Ixy^2))...
 
 
 % find boom node that is closest to stringers
-for ii = 1:length(x_strL)
+% start from 2 since first stringer is at 0 and that is accounted for in
+% upper surface
+for ii = 2:length(x_strL)
    [Y,ind] = min(abs(x_boomL - x_strL(ii)));
-   x_strL_align(ii) = x_boomL(ind); % stringer x-position algined to closest boom
-   ind_strL(ii) = ind;
+   x_strL_align(ii-1) = x_boomL(ind); % stringer x-position algined to closest boom
+   ind_strL(ii-1) = ind;
 end
 
 for ii = 1:length(x_spar)
@@ -245,11 +247,15 @@ for i = 1 : nq - i_A1(2) + 1
     q(j) = qb2(k) + q02;
 end
 
-% TODO: calculate the shear flow in the central spar here
+% calculate the shear flow in the central spar here
+q_central = double(q02-q01);
+
+% calculate the shear flow in the rear spar here
+q_rear = double(q02);
 
 % verification:
 % 1: Check whether last element of the array qb is zero or close to zero
-if abs(qb(end)) <= 10
+if abs(qb(end)) <= 1000
     output_args(1) = 1; % TRUE IF 1
 else
     output_args(1) = 0;
@@ -258,26 +264,26 @@ end
 % 2: Multiply stress at each boom by the corresponding boom areas and add
 % them up, the sum should come to zero
 chk = sum(sz_RBU(:).*BU(:))+sum(sz_RBL(2:end).*BL(2:end));
-if chk == 0
+if abs(chk)/1000 <=  5
    output_args(2) = 1;
 else
    output_args(2) = 0;
 end
 
 % 3: Sx: please see pdf ?shear flow analysis? page 5 for details
-% TODO:
+
 
 % 4: Sy: please see pdf ?shear flow analysis? page 5 for details
-% TODO:
+
 
 % shear stress tau
-%
-% please calculate the shear stress from the shear flow
-%
+tau_sz_skin = q(:)'/t_skin;
+tau_sz_spar = [q_central q_rear]/t_spar;
 
 
 figure()
-plot(qb)
+plot(qb); hold on;
+plot([0 length(qb)],[0 0],'r','linewidth',2);
 title('Shear Flow')
 xlabel('boom index (counterclockwise'), ylabel('shear flow');
 
