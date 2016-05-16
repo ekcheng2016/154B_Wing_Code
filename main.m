@@ -11,6 +11,7 @@ PLOT_SHEAR = 0;
 PLOT_MOMENT = 0;
 PLOT_LOADS = 0;
 PLOT_SIGMAZZ = 0;
+fid = fopen([pwd '/Shear_Flow_Figure/shear_flow_numbers.txt'],'w');
 
 
 clrstring = 'bgkrc';
@@ -34,8 +35,8 @@ n_allow_ceil = calc_flgt_envel(naca2415(2),rho_altceil,'Ceiling Altitude (14600 
 % calc_centroid_momentinertia;
 
 % ACTUAL AIRFOIL SECTION
-airf_geo.A_cap = 5/1000;   % m^2
-airf_geo.A_str = 3/1000;   % m^2
+airf_geo.A_cap = 7e-4;   % m^2
+airf_geo.A_str = 3.5e-5;   % m^2
 airf_geo.t_spar = 0.0025;   % m
 airf_geo.t_skin = 0.001016;  % m
 % % locations of spars, spar caps and stringers (nose at the origin of the coordinate)
@@ -107,6 +108,15 @@ for ii = 1:length(n_allow_slvl.n)
             sf_fig = figure(113);
             hold on; box on; grid on;
             sff(ii) = plot(tau_sz_slvl(ii).qb/1e3,'color',clrstring(ii),'linewidth',2);
+            tau_fig = figure(114);
+            hold on; box on; grid on;
+            tauf(ii) = plot(tau_sz_slvl(ii).skin/1e6,'color',clrstring(ii),'linewidth',2);
+            fprintf(fid,'Flight Condition: Sea Level\n');
+            fprintf(fid,'Loading Condition: %20s\n',char(n_allow_slvl.name(ii)));
+            fprintf(fid,'q01 = %5.4f N/m\n',tau_sz_slvl(ii).q01);
+            fprintf(fid,'q02 = %5.4f N/m\n',tau_sz_slvl(ii).q02);
+            fprintf(fid,'tau_spars = %5.4f MPa, %5.4f MPa\n',tau_sz_slvl(ii).spar/1e6);
+            fprintf(fid,'Max Shear Stress = %5.4f MPa\n\n',tau_sz_slvl(ii).max/1e6);
         end
         
         % PLOT
@@ -254,7 +264,12 @@ figure(113);    sff(end+1) = plot([0 length(tau_sz_slvl(1).qb)],[0 0],'r','linew
                 legend(sff(:),[n_allow_slvl(:).name 'Zero']);
                 title('Sea Level'); pos = get(sf_fig,'position');
                 set(sf_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(sf_fig,[pwd '/Shear_Flow_Figure/SLVL_sf'],'-djpeg','-r300');
+                print(sf_fig,[pwd '/Shear_Flow_Figure/SLVL_sf_open'],'-djpeg','-r300');
+figure(114);    xlabel('Node (counterclockwise)');  ylabel('Shear Force (\tau_{sz}) (MPa)');
+                legend(tauf(:),n_allow_slvl(:).name);
+                title('Sea Level'); pos = get(tau_fig,'position');
+                set(tau_fig,'position',[pos(1:2) pos(3:4)*1.5]);
+                print(tau_fig,[pwd '/Shear_Flow_Figure/SLVL_tau_sz'],'-djpeg','-r300');
 end
 
 if PLOT_SIGMAZZ
@@ -327,6 +342,15 @@ for ii = 1:length(n_allow_ceil.n)
             sf_fig = figure(213);
             hold on; box on; grid on;
             sff(ii) = plot(tau_sz_ceil(ii).qb/1e3,'color',clrstring(ii),'linewidth',2);
+            tau_fig = figure(214);
+            hold on; box on; grid on;
+            tauf(ii) = plot(tau_sz_ceil(ii).skin/1e6,'color',clrstring(ii),'linewidth',2);        
+            fprintf(fid,'Flight Condition: Ceiling\n');
+            fprintf(fid,'Loading Condition: %20s\n',char(n_allow_ceil.name(ii)));
+            fprintf(fid,'q01 = %5.4f N/m\n',tau_sz_ceil(ii).q01);
+            fprintf(fid,'q02 = %5.4f N/m\n',tau_sz_ceil(ii).q02);
+            fprintf(fid,'tau_spars = %5.4f MPa, %5.4f MPa\n',tau_sz_ceil(ii).spar/1e6);
+            fprintf(fid,'Max Shear Stress = %5.4f MPa\n\n',tau_sz_ceil(ii).max/1e6);
         end
         
         if PLOT_SHEAR
@@ -473,7 +497,12 @@ figure(213);    sff(end+1) = plot([0 length(tau_sz_ceil(1).qb)],[0 0],'r','linew
                 legend(sff(:),[n_allow_slvl(:).name 'Zero']);
                 title('Ceiling Altitude'); pos = get(sf_fig,'position');
                 set(sf_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                print(sf_fig,[pwd '/Shear_Flow_Figure/CEIL_sf'],'-djpeg','-r300');
+                print(sf_fig,[pwd '/Shear_Flow_Figure/CEIL_sf_open'],'-djpeg','-r300');
+figure(214);    xlabel('Node (counterclockwise)');  ylabel('Shear Force (\tau_{sz}) (MPa)');
+                legend(tauf(:),n_allow_slvl(:).name);
+                title('Ceiling Altitude'); pos = get(tau_fig,'position');
+                set(tau_fig,'position',[pos(1:2) pos(3:4)*1.5]);
+                print(tau_fig,[pwd '/Shear_Flow_Figure/CEIL_tau_sz'],'-djpeg','-r300');
 end
 
 if PLOT_SIGMAZZ
@@ -513,7 +542,7 @@ sigma_eq = von_mises([sigma_zz_slvl(:).max],[sigma_zz_ceil(:).max],...
 disp(strjoin(['Von Mises Equivalent Stress : ' num2str(sigma_eq.val/1e6) ...
     'MPa, occurs at : ' n_allow_slvl.name(sigma_eq.ind) ', Flight Condition: ' sigma_eq.fgt_cond]));
                 
-if sigma_eq.val/1e6 >= sigma_yield
+if (sigma_eq.val/1e6)*1.5 >= sigma_yield
    disp('WING WILL FAIL UNDER VON MISES STRESS CRITERIA');
 else
     disp('WING WILL NOT FAIL UNDER VON MISES STRESS CRITERIA!');

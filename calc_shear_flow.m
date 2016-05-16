@@ -281,7 +281,7 @@ end
 tau_sz_skin = q(:)'/t_skin;
 tau_sz_spar = [q_central q_rear]/t_spar;
 
-tau_sz_max = max([tau_sz_skin tau_sz_spar]);
+tau_sz_max = max(abs([tau_sz_skin tau_sz_spar]));
 
 tau_sz.x_skin    = xB_total;
 tau_sz.y_skin    = yB_total;
