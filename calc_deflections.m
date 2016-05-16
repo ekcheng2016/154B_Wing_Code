@@ -25,7 +25,7 @@ function [deflections] = calc_deflections(b,Ixx,Iyy,Ixy,nz,Mx0,My0,wx0,wy0)
     L = b/2;                % half span         m
     z = 0:L/nz:L;
     
-    E = 70e9;   % modulus of material TODO: CHANGE LATER (don't hard code this here)
+    E = 73.1e9;   % modulus of material TODO: CHANGE LATER (don't hard code this here)
     K = 1/(E*(Ixx*Iyy - Ixy^2));
     ddu = -K.*(-Ixy.*Mx0 + Ixx.*My0);
     ddv = -K.*(Iyy.*Mx0 - Ixy.*My0);

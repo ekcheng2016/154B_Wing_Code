@@ -4,8 +4,8 @@
 %   This calculates the shear flow of the wing
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [ output_args ] = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,Mx0,My0,...
-                                Sx,Sy,M0,c,Cx,Cy)
+function [ tau_sz ] = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,Mx0,My0,...
+                                Sx,Sy,M0,c,Cx,Cy,PLOT_SHEAR_FLOW)
 
 % dereference airfoil geometry structure
 x       = airf_geo.x;
@@ -144,16 +144,16 @@ xB_total = [fliplr(x_boomU), x_boomL(2:end)];
 yB_total = [fliplr(y_boomU), y_boomL(2:end)];
 LB_total = [fliplr(L_boomU), L_boomL, h_spar(2)];
 
-figure()
-plot(xB_total,yB_total,'ro','markersize',6);
-hold on
-plot(x,yU,'k',x,yL,'k','linewidth',1.5);
-plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
-ylim([-0.3 0.3]) 
-xlabel('x (m)')
-ylabel('y (m)')
-title('Boom Distribution')
-grid on
+% figure()
+% plot(xB_total,yB_total,'ro','markersize',6);
+% hold on
+% plot(x,yU,'k',x,yL,'k','linewidth',1.5);
+% plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
+% ylim([-0.3 0.3]) 
+% xlabel('x (m)')
+% ylabel('y (m)')
+% title('Boom Distribution')
+% grid on
 
 % for i = 1:2
 %     BU(i_BsparU(i)) = BU(i_BsparU(i)) + t_spar*h_spar(i)/6*(2+sz_RBL(i_BsparL(i))/sz_RBU(i_BsparU(i)));
@@ -280,12 +280,22 @@ end
 tau_sz_skin = q(:)'/t_skin;
 tau_sz_spar = [q_central q_rear]/t_spar;
 
+if PLOT_SHEAR_FLOW
+    figure()
+    plot(qb); hold on;
+    plot([0 length(qb)],[0 0],'r','linewidth',2);
+    title('Shear Flow')
+    xlabel('boom index (counterclockwise'), ylabel('shear flow');
+end
 
-figure()
-plot(qb); hold on;
-plot([0 length(qb)],[0 0],'r','linewidth',2);
-title('Shear Flow')
-xlabel('boom index (counterclockwise'), ylabel('shear flow');
+tau_sz_max = max([tau_sz_skin tau_sz_spar]);
+
+tau_sz.x_skin    = xB_total;
+tau_sz.y_skin    = yB_total;
+tau_sz.x_spar    = x_spar;
+tau_sz.skin      = tau_sz_skin;
+tau_sz.spar      = tau_sz_spar;
+tau_sz.max       = tau_sz_max;
 
 
 end

@@ -1,10 +1,11 @@
-%clear all; 
+clear all; 
 close all; 
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
 PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
 PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
+PLOT_SHEAR_FLOW = 0;
 PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
 
 clrstring = 'bgkrc';
@@ -93,10 +94,10 @@ for ii = 1:length(n_allow_slvl.n)
                                     load_slvl(ii).wx0,load_slvl(ii).wy0);
         
         % calculate shear flow
-        temp_output(ii).out = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
+        tau_sz_slvl(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
                                 moment_slvl(ii).Mx0, moment_slvl(ii).My0,...
                                 shear_slvl(ii).Sx0, shear_slvl(ii).Sy0,...
-                                load_slvl(ii).M0,c,Cx,Cy);             
+                                load_slvl(ii).M0,c,Cx,Cy,PLOT_SHEAR_FLOW);             
         
         % PLOT
         if PLOT_PREVIOUS
@@ -149,8 +150,10 @@ sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
 sigma_zz_MAX_slvl_ind = find([sigma_zz_slvl(1:end).max]/1e6 == sigma_zz_MAX_slvl_val);
 disp(strjoin(['Max sigma_zz at Sea Level : ' num2str(sigma_zz_MAX_slvl_val) ...
     'MPa, occurs at : ' n_allow_slvl.name(sigma_zz_MAX_slvl_ind)]))
-
-
+tau_sz_MAX_slvl_val = max([tau_sz_slvl(1:end).max])/1e6;
+tau_sz_MAX_slvl_ind = find([tau_sz_slvl(1:end).max]/1e6 == tau_sz_MAX_slvl_val);
+disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_slvl_val) ...
+    'MPa, occurs at : ' n_allow_slvl.name(tau_sz_MAX_slvl_ind)]))
 
 
 if PLOT_PREVIOUS
@@ -277,7 +280,11 @@ for ii = 1:length(n_allow_ceil.n)
                                     load_ceil(ii).wx,load_ceil(ii).wy,...
                                     load_ceil(ii).wx0,load_ceil(ii).wy0);
         
-        % PLOT
+        % calculate shear flow
+        tau_sz_ceil(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
+                                moment_ceil(ii).Mx0, moment_ceil(ii).My0,...
+                                shear_ceil(ii).Sx0, shear_ceil(ii).Sy0,...
+                                load_ceil(ii).M0,c,Cx,Cy,PLOT_SHEAR_FLOW);                     % PLOT
         if PLOT_PREVIOUS
         sx_fig = figure(206);
         hold on; box on; grid on;
@@ -329,7 +336,10 @@ sigma_zz_MAX_ceil_val = max([sigma_zz_ceil(1:end).max])/1e6;
 sigma_zz_MAX_ceil_ind = find([sigma_zz_ceil(1:end).max]/1e6 == sigma_zz_MAX_ceil_val);
 disp(strjoin(['Max sigma_zz at Ceiling : ' num2str(sigma_zz_MAX_ceil_val) ...
     'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MAX_ceil_ind)]))
-
+tau_sz_MAX_ceil_val = max([tau_sz_ceil(1:end).max])/1e6;
+tau_sz_MAX_ceil_ind = find([tau_sz_ceil(1:end).max]/1e6 == tau_sz_MAX_ceil_val);
+disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_ceil_val) ...
+    'MPa, occurs at : ' n_allow_slvl.name(tau_sz_MAX_ceil_ind)]))
 
 if PLOT_PREVIOUS
 figure(200);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');
@@ -410,4 +420,28 @@ end
 %%%%                        Buckling & Fatigue                         %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-buckling = calc_buckling(I_str,sigma_zz_MAX_ceil_val,airf_geo.A_str,airf_geo.t_skin);
+buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]),airf_geo.A_str,airf_geo.t_skin);
+
+disp(strjoin(['Buckling Critical Stress: ' num2str(buckling.sigma_crit) 'MPa']));
+
+if max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]) >= buckling.sigma_crit
+   disp('WING WILL BUCKLE');
+else
+    disp('WING WILL NOT BUCKLE!');
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%                        Von Mises Failure                          %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+sigma_eq = von_mises([sigma_zz_slvl(:).max],[sigma_zz_ceil(:).max],...
+                    [tau_sz_slvl(:).max],[tau_sz_ceil(:).max]);
+
+disp(strjoin(['Von Mises Equivalent Stress : ' num2str(sigma_eq.val/1e6) ...
+    'MPa, occurs at : ' n_allow_slvl.name(sigma_eq.ind) ', Flight Condition: ' sigma_eq.fgt_cond]));
+                
+if sigma_eq.val/1e6 >= sigma_yield
+   disp('WING WILL FAIL UNDER VON MISES STRESS CRITERIA');
+else
+    disp('WING WILL NOT FAIL UNDER VON MISES STRESS CRITERIA!');
+end

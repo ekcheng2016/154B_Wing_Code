@@ -33,3 +33,5 @@ n2      = -0.4*4.4;  % Negative Limit Maneuvering Load
 n3      = -1;        % Negative Limit at Dive Speed
 n_PHAA  = 4.40;      % Load at PHAA
 n_NHAA  = -1.76;     % Load at NHAA
+
+sigma_yield = 324;   % Yield Strength in MPa
