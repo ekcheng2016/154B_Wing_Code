@@ -4,9 +4,14 @@ clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
 PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
-PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
+PLOT_LIFTCURVE = 1;   % set 1 to plot and save lift curve slope plot
 PLOT_SHEAR_FLOW = 0;
-PLOT_PREVIOUS = 0;    % set 1 to plot and save all load/shear plots
+PLOT_DEFLECTION = 1;    % set 1 to plot and save all load/shear plots
+PLOT_SHEAR = 1;
+PLOT_MOMENT = 1;
+PLOT_LOADS = 1;
+PLOT_SIGMAZZ = 1;
+
 
 clrstring = 'bgkrc';
 
@@ -56,7 +61,7 @@ for ii = 1:length(n_allow_slvl.n)
                                     n_allow_slvl.Cd(ii),n_allow_slvl.CM(ii),nz);
         
         %PLOT DISTRIBUTIONS
-        if PLOT_PREVIOUS
+        if PLOT_LOADS
         lift_ellip_fig = figure(100);
         hold on; box on; grid on;
         lef(ii) = plot(load_slvl(ii).z,load_slvl(ii).l_ellip,'Color',clrstring(ii),'linewidth',2);
@@ -100,26 +105,28 @@ for ii = 1:length(n_allow_slvl.n)
                                 load_slvl(ii).M0,c,Cx,Cy,PLOT_SHEAR_FLOW);             
         
         % PLOT
-        if PLOT_PREVIOUS
+        if PLOT_SHEAR
         sx_fig = figure(106);
         hold on; box on; grid on;
-        sxf(ii) = plot(shear_slvl(ii).z,shear_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_slvl(ii).z,shear_slvl(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
+        sxf(ii) = plot(shear_slvl(ii).z,shear_slvl(ii).Sx0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_slvl(ii).z,shear_slvl(ii).Sx0/1e3,'Color',clrstring(ii),'linewidth',2);
         
         sy_fig = figure(107);
         hold on; box on; grid on;
-        syf(ii) = plot(shear_slvl(ii).z,shear_slvl(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_slvl(ii).z,shear_slvl(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
-                  
+        syf(ii) = plot(shear_slvl(ii).z,shear_slvl(ii).Sy0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_slvl(ii).z,shear_slvl(ii).Sy0/1e3,'Color',clrstring(ii),'linewidth',2);
+        end
+        
+        if PLOT_MOMENT
         mx_fig = figure(108);
         hold on; box on; grid on;
-        mxf(ii) = plot(moment_slvl(ii).z,moment_slvl(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-moment_slvl(ii).z,moment_slvl(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
+        mxf(ii) = plot(moment_slvl(ii).z,moment_slvl(ii).Mx0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_slvl(ii).z,moment_slvl(ii).Mx0/1e3,'Color',clrstring(ii),'linewidth',2);
                   
         my_fig = figure(109);
         hold on; box on; grid on;
-        myf(ii) = plot(moment_slvl(ii).z,moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-moment_slvl(ii).z,moment_slvl(ii).My0,'Color',clrstring(ii),'linewidth',2);        
+        myf(ii) = plot(moment_slvl(ii).z,moment_slvl(ii).My0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_slvl(ii).z,moment_slvl(ii).My0/1e3,'Color',clrstring(ii),'linewidth',2);        
         end
                   
         % DETERMINE DEFLECTIONS
@@ -127,7 +134,7 @@ for ii = 1:length(n_allow_slvl.n)
                                     moment_slvl(ii).Mx0,moment_slvl(ii).My0,...
                                     load_slvl(ii).wx0,load_slvl(ii).wy0);
                                 
-        if PLOT_PREVIOUS
+        if PLOT_DEFLECTION
         u_fig = figure(110);
         hold on; box on; grid on;
         uf(ii) = plot(deflection_slvl(ii).z,deflection_slvl(ii).u*1000,'Color',clrstring(ii),'linewidth',2);
@@ -143,7 +150,7 @@ for ii = 1:length(n_allow_slvl.n)
         [sigma_zz_slvl(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                                 moment_slvl(ii).Mx0(1),moment_slvl(ii).My0(1),...
                                 airf_geo.x,airf_geo.yU,airf_geo.x,airf_geo.yL);
-                            
+
     end
 end
 sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
@@ -156,7 +163,7 @@ disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_slvl_val) ...
     'MPa, occurs at : ' n_allow_slvl.name(tau_sz_MAX_slvl_ind)]))
 
 
-if PLOT_PREVIOUS
+if PLOT_LOADS
 figure(100);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');
                 legend(lef(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(lift_ellip_fig,'position');
@@ -192,31 +199,37 @@ figure(105);    xlabel('Span (m)');     ylabel('w_y Distribution (N/m)');
                 title('Sea Level'); pos = get(wy_fig,'position');
                 set(wy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(wy_fig,[pwd '/Load_Distribution_Figures/SLVL_wy'],'-djpeg','-r300');
+end
 
-figure(106);    xlabel('Span (m)');     ylabel('S_x Distribution (N)');
+if PLOT_SHEAR
+figure(106);    xlabel('Span (m)');     ylabel('S_x Distribution (kN)');
                 legend(sxf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(sx_fig,'position');
                 set(sx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(sx_fig,[pwd '/Load_Distribution_Figures/SLVL_Sx'],'-djpeg','-r300');
                 
-figure(107);    xlabel('Span (m)');     ylabel('S_y Distribution (N)');
+figure(107);    xlabel('Span (m)');     ylabel('S_y Distribution (kN)');
                 legend(syf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(sy_fig,'position');
                 set(sy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(sy_fig,[pwd '/Load_Distribution_Figures/SLVL_Sy'],'-djpeg','-r300');
-                
-figure(108);    xlabel('Span (m)');     ylabel('M_x Distribution (Nm)');
+end
+
+if PLOT_MOMENT
+figure(108);    xlabel('Span (m)');     ylabel('M_x Distribution (kNm)');
                 legend(mxf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(mx_fig,'position');
                 set(mx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(mx_fig,[pwd '/Load_Distribution_Figures/SLVL_Mx'],'-djpeg','-r300');
                 
-figure(109);    xlabel('Span (m)');     ylabel('M_y Distribution (Nm)');
+figure(109);    xlabel('Span (m)');     ylabel('M_y Distribution (kNm)');
                 legend(myf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(my_fig,'position');
                 set(my_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(my_fig,[pwd '/Load_Distribution_Figures/SLVL_My'],'-djpeg','-r300');
+end
 
+if PLOT_DEFLECTION
 figure(110);    xlabel('Span (m)');     ylabel('u deflection (mm)');
                 legend(uf(:),n_allow_slvl(:).name);    xlim([-b/2 b/2]);
                 title('Sea Level'); pos = get(u_fig,'position');
@@ -228,9 +241,19 @@ figure(111);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 title('Sea Level'); pos = get(v_fig,'position');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(v_fig,[pwd '/Deflection_Figures/SLVL_v'],'-djpeg','-r300');                
-
 end
-                
+
+if PLOT_SIGMAZZ
+sigmazz_fig = figure(112);
+hold on; box on; grid on;
+plot(airf_geo.x,sigma_zz_slvl(sigma_zz_MAX_slvl_ind).upper/1e6,'b','linewidth',2);
+plot(airf_geo.x,sigma_zz_slvl(sigma_zz_MAX_slvl_ind).lower/1e6,'g','linewidth',2);
+xlabel('Chord (m)');    ylabel('Direct Stress (\sigma_{zz}) (MPa)');
+legend('Upper Surface','Lower Surface');    xlim([0-Cx c-Cx]);
+title('Sea Level'); pos = get(sigmazz_fig,'position');
+set(sigmazz_fig,'position',[pos(1:2) pos(3:4)*1.5]);
+print(sigmazz_fig,[pwd '/Stress_Figure/SLVL_DirectStress'],'-djpeg','-r300');
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%           LOAD DISTRIBUTIONS @ CEILING   (all critical pts)         %%%
@@ -243,7 +266,7 @@ for ii = 1:length(n_allow_ceil.n)
                                     n_allow_ceil.Cd(ii),n_allow_ceil.CM(ii),nz);
         
         %PLOT DISTRIBUTIONS
-        if PLOT_PREVIOUS
+        if PLOT_LOADS
         lift_ellip_fig = figure(200);
         hold on; box on; grid on;
         lef(ii) = plot(load_ceil(ii).z,load_ceil(ii).l_ellip,'Color',clrstring(ii),'linewidth',2);
@@ -285,27 +308,27 @@ for ii = 1:length(n_allow_ceil.n)
                                 moment_ceil(ii).Mx0, moment_ceil(ii).My0,...
                                 shear_ceil(ii).Sx0, shear_ceil(ii).Sy0,...
                                 load_ceil(ii).M0,c,Cx,Cy,PLOT_SHEAR_FLOW);                     % PLOT
-        if PLOT_PREVIOUS
+        if PLOT_SHEAR
         sx_fig = figure(206);
         hold on; box on; grid on;
-        sxf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_ceil(ii).z,shear_ceil(ii).Sx0,'Color',clrstring(ii),'linewidth',2);
+        sxf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sx0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_ceil(ii).z,shear_ceil(ii).Sx0/1e3,'Color',clrstring(ii),'linewidth',2);
         
         sy_fig = figure(207);
         hold on; box on; grid on;
-        syf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-shear_ceil(ii).z,shear_ceil(ii).Sy0,'Color',clrstring(ii),'linewidth',2);
-                  
+        syf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sy0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-shear_ceil(ii).z,shear_ceil(ii).Sy0/1e3,'Color',clrstring(ii),'linewidth',2);
+        end
+        if PLOT_MOMENT
         mx_fig = figure(208);
         hold on; box on; grid on;
-        mxf(ii) = plot(moment_ceil(ii).z,moment_ceil(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-moment_ceil(ii).z,moment_ceil(ii).Mx0,'Color',clrstring(ii),'linewidth',2);
+        mxf(ii) = plot(moment_ceil(ii).z,moment_ceil(ii).Mx0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_ceil(ii).z,moment_ceil(ii).Mx0/1e3,'Color',clrstring(ii),'linewidth',2);
                   
         my_fig = figure(209);
         hold on; box on; grid on;
-        myf(ii) = plot(moment_ceil(ii).z,moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);
-                  plot(-moment_ceil(ii).z,moment_ceil(ii).My0,'Color',clrstring(ii),'linewidth',2);        
-      
+        myf(ii) = plot(moment_ceil(ii).z,moment_ceil(ii).My0/1e3,'Color',clrstring(ii),'linewidth',2);
+                  plot(-moment_ceil(ii).z,moment_ceil(ii).My0/1e3,'Color',clrstring(ii),'linewidth',2);        
         end
         
         % DETERMINE DEFLECTIONS
@@ -313,7 +336,7 @@ for ii = 1:length(n_allow_ceil.n)
                                     moment_ceil(ii).Mx0,moment_ceil(ii).My0,...
                                     load_ceil(ii).wx0,load_ceil(ii).wy0);
         
-        if PLOT_PREVIOUS
+        if PLOT_DEFLECTION
         u_fig = figure(210);
         hold on; box on; grid on;
         uf(ii) = plot(deflection_ceil(ii).z,deflection_ceil(ii).u*1000,'Color',clrstring(ii),'linewidth',2);
@@ -329,6 +352,7 @@ for ii = 1:length(n_allow_ceil.n)
         [sigma_zz_ceil(ii)] = calc_sigmazz(Ixx,Iyy,Ixy,...
                             moment_ceil(ii).Mx0(1),moment_ceil(ii).My0(1),...
                             airf_geo.x,airf_geo.yU,airf_geo.x,airf_geo.yL);
+                  
     end
 end
 
@@ -341,7 +365,7 @@ tau_sz_MAX_ceil_ind = find([tau_sz_ceil(1:end).max]/1e6 == tau_sz_MAX_ceil_val);
 disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_ceil_val) ...
     'MPa, occurs at : ' n_allow_slvl.name(tau_sz_MAX_ceil_ind)]))
 
-if PLOT_PREVIOUS
+if PLOT_LOADS
 figure(200);    xlabel('Span (m)');     ylabel('Elliptical Lift Distribution (N/m)');
                 legend(lef(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(lift_ellip_fig,'position');
@@ -377,31 +401,37 @@ figure(205);    xlabel('Span (m)');     ylabel('w_y Distribution (N/m)');
                 title('Ceiling Altitude'); pos = get(wy_fig,'position');
                 set(wy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(wy_fig,[pwd '/Load_Distribution_Figures/CEIL_wy'],'-djpeg','-r300');
+end
 
-figure(206);    xlabel('Span (m)');     ylabel('S_x Distribution (N)');
+if PLOT_SHEAR
+figure(206);    xlabel('Span (m)');     ylabel('S_x Distribution (kN)');
                 legend(sxf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(sx_fig,'position');
                 set(sx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(sx_fig,[pwd '/Load_Distribution_Figures/CEIL_Sx'],'-djpeg','-r300');
                 
-figure(207);    xlabel('Span (m)');     ylabel('S_y Distribution (N)');
+figure(207);    xlabel('Span (m)');     ylabel('S_y Distribution (kN)');
                 legend(syf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(sy_fig,'position');
                 set(sy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(sy_fig,[pwd '/Load_Distribution_Figures/CEIL_Sy'],'-djpeg','-r300');
-                
-figure(208);    xlabel('Span (m)');     ylabel('M_x Distribution (Nm)');
+end
+
+if PLOT_MOMENT
+figure(208);    xlabel('Span (m)');     ylabel('M_x Distribution (kNm)');
                 legend(mxf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(mx_fig,'position');
                 set(mx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(mx_fig,[pwd '/Load_Distribution_Figures/CEIL_Mx'],'-djpeg','-r300');
                 
-figure(209);    xlabel('Span (m)');     ylabel('M_y Distribution (Nm)');
+figure(209);    xlabel('Span (m)');     ylabel('M_y Distribution (kNm)');
                 legend(myf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(my_fig,'position');
                 set(my_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(my_fig,[pwd '/Load_Distribution_Figures/CEIL_My'],'-djpeg','-r300');
+end
 
+if PLOT_DEFLECTION
 figure(210);    xlabel('Span (m)');     ylabel('u deflection (mm)');
                 legend(uf(:),n_allow_ceil(:).name);    xlim([-b/2 b/2]);
                 title('Ceiling Altitude'); pos = get(u_fig,'position');
@@ -413,8 +443,20 @@ figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 title('Ceiling Altitude'); pos = get(v_fig,'position');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(v_fig,[pwd '/Deflection_Figures/CEIL_v'],'-djpeg','-r300');
-
 end
+
+if PLOT_SIGMAZZ
+sigmazz_fig = figure(212);
+hold on; box on; grid on;
+plot(airf_geo.x,sigma_zz_slvl(sigma_zz_MAX_ceil_ind).upper/1e6,'b','linewidth',2);
+plot(airf_geo.x,sigma_zz_slvl(sigma_zz_MAX_ceil_ind).lower/1e6,'g','linewidth',2);
+xlabel('Chord (m)');    ylabel('Direct Stress (\sigma_{zz}) (MPa)');
+legend('Upper Surface','Lower Surface');    xlim([0-Cx c-Cx]);
+title('Ceiling Altitude'); pos = get(sigmazz_fig,'position');
+set(sigmazz_fig,'position',[pos(1:2) pos(3:4)*1.5]);
+print(sigmazz_fig,[pwd '/Stress_Figure/CEIL_DirectStress'],'-djpeg','-r300');
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                        Buckling & Fatigue                         %%%%
