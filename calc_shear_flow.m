@@ -5,7 +5,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ tau_sz ] = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,Mx0,My0,...
-                                Sx,Sy,M0,c,Cx,Cy,PLOT_SHEAR_FLOW)
+                                Sx,Sy,M0,c,Cx,Cy,COUNT)
 
 % dereference airfoil geometry structure
 x       = airf_geo.x;
@@ -144,17 +144,18 @@ xB_total = [fliplr(x_boomU), x_boomL(2:end)];
 yB_total = [fliplr(y_boomU), y_boomL(2:end)];
 LB_total = [fliplr(L_boomU), L_boomL, h_spar(2)];
 
-% figure()
-% plot(xB_total,yB_total,'ro','markersize',6);
-% hold on
-% plot(x,yU,'k',x,yL,'k','linewidth',1.5);
-% plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
-% ylim([-0.3 0.3]) 
-% xlabel('x (m)')
-% ylabel('y (m)')
-% title('Boom Distribution')
-% grid on
-
+if COUNT == 1
+figure()
+plot(xB_total,yB_total,'ro','markersize',6);
+hold on
+plot(x,yU,'k',x,yL,'k','linewidth',1.5);
+plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
+ylim([-0.3 0.3]) 
+xlabel('x (m)')
+ylabel('y (m)')
+title('Boom Distribution')
+grid on
+end
 % for i = 1:2
 %     BU(i_BsparU(i)) = BU(i_BsparU(i)) + t_spar*h_spar(i)/6*(2+sz_RBL(i_BsparL(i))/sz_RBU(i_BsparU(i)));
 %     BL(i_BsparL(i)) = BL(i_BsparL(i)) + t_spar*h_spar(i)/6*(2+sz_RBU(i_BsparU(i))/sz_RBL(i_BsparL(i)));
@@ -248,7 +249,7 @@ for i = 1 : nq - i_A1(2) + 1
 end
 
 % calculate the shear flow in the central spar here
-q_central = double(q02-q01);
+q_central = double(q01-q02);
 
 % calculate the shear flow in the rear spar here
 q_rear = double(q02);
@@ -280,20 +281,16 @@ end
 tau_sz_skin = q(:)'/t_skin;
 tau_sz_spar = [q_central q_rear]/t_spar;
 
-if PLOT_SHEAR_FLOW
-    figure()
-    plot(qb); hold on;
-    plot([0 length(qb)],[0 0],'r','linewidth',2);
-    title('Shear Flow')
-    xlabel('boom index (counterclockwise'), ylabel('shear flow');
-end
-
 tau_sz_max = max([tau_sz_skin tau_sz_spar]);
 
 tau_sz.x_skin    = xB_total;
 tau_sz.y_skin    = yB_total;
 tau_sz.x_spar    = x_spar;
 tau_sz.skin      = tau_sz_skin;
+tau_sz.qb        = qb;
+tau_sz.q01       = double(q01);
+tau_sz.q02       = double(q02);
+tau_sz.q         = q;
 tau_sz.spar      = tau_sz_spar;
 tau_sz.max       = tau_sz_max;
 

@@ -4,13 +4,13 @@ clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
 PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
-PLOT_LIFTCURVE = 1;   % set 1 to plot and save lift curve slope plot
-PLOT_SHEAR_FLOW = 0;
-PLOT_DEFLECTION = 1;    % set 1 to plot and save all load/shear plots
-PLOT_SHEAR = 1;
-PLOT_MOMENT = 1;
-PLOT_LOADS = 1;
-PLOT_SIGMAZZ = 1;
+PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
+PLOT_SHEAR_FLOW = 1;
+PLOT_DEFLECTION = 0;    % set 1 to plot and save all load/shear plots
+PLOT_SHEAR = 0;
+PLOT_MOMENT = 0;
+PLOT_LOADS = 0;
+PLOT_SIGMAZZ = 0;
 
 
 clrstring = 'bgkrc';
@@ -102,7 +102,12 @@ for ii = 1:length(n_allow_slvl.n)
         tau_sz_slvl(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
                                 moment_slvl(ii).Mx0, moment_slvl(ii).My0,...
                                 shear_slvl(ii).Sx0, shear_slvl(ii).Sy0,...
-                                load_slvl(ii).M0,c,Cx,Cy,PLOT_SHEAR_FLOW);             
+                                load_slvl(ii).M0,c,Cx,Cy,ii);             
+        if PLOT_SHEAR_FLOW
+            sf_fig = figure(113);
+            hold on; box on; grid on;
+            sff(ii) = plot(tau_sz_slvl(ii).qb/1e3,'color',clrstring(ii),'linewidth',2);
+        end
         
         % PLOT
         if PLOT_SHEAR
@@ -243,6 +248,15 @@ figure(111);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 print(v_fig,[pwd '/Deflection_Figures/SLVL_v'],'-djpeg','-r300');                
 end
 
+if PLOT_SHEAR_FLOW
+figure(113);    sff(end+1) = plot([0 length(tau_sz_slvl(1).qb)],[0 0],'r','linewidth',2);
+                xlabel('Node (counterclockwise)');  ylabel('Shear Flow (kN/m)');
+                legend(sff(:),[n_allow_slvl(:).name 'Zero']);
+                title('Sea Level'); pos = get(sf_fig,'position');
+                set(sf_fig,'position',[pos(1:2) pos(3:4)*1.5]);
+                print(sf_fig,[pwd '/Shear_Flow_Figure/SLVL_sf'],'-djpeg','-r300');
+end
+
 if PLOT_SIGMAZZ
 sigmazz_fig = figure(112);
 hold on; box on; grid on;
@@ -307,7 +321,14 @@ for ii = 1:length(n_allow_ceil.n)
         tau_sz_ceil(ii) = calc_shear_flow(Ixx,Iyy,Ixy,airf_geo,...
                                 moment_ceil(ii).Mx0, moment_ceil(ii).My0,...
                                 shear_ceil(ii).Sx0, shear_ceil(ii).Sy0,...
-                                load_ceil(ii).M0,c,Cx,Cy,PLOT_SHEAR_FLOW);                     % PLOT
+                                load_ceil(ii).M0,c,Cx,Cy,0);                     % PLOT
+        
+        if PLOT_SHEAR_FLOW
+            sf_fig = figure(213);
+            hold on; box on; grid on;
+            sff(ii) = plot(tau_sz_ceil(ii).qb/1e3,'color',clrstring(ii),'linewidth',2);
+        end
+        
         if PLOT_SHEAR
         sx_fig = figure(206);
         hold on; box on; grid on;
@@ -319,6 +340,7 @@ for ii = 1:length(n_allow_ceil.n)
         syf(ii) = plot(shear_ceil(ii).z,shear_ceil(ii).Sy0/1e3,'Color',clrstring(ii),'linewidth',2);
                   plot(-shear_ceil(ii).z,shear_ceil(ii).Sy0/1e3,'Color',clrstring(ii),'linewidth',2);
         end
+        
         if PLOT_MOMENT
         mx_fig = figure(208);
         hold on; box on; grid on;
@@ -443,6 +465,15 @@ figure(211);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                 title('Ceiling Altitude'); pos = get(v_fig,'position');
                 set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
                 print(v_fig,[pwd '/Deflection_Figures/CEIL_v'],'-djpeg','-r300');
+end
+
+if PLOT_SHEAR_FLOW
+figure(213);    sff(end+1) = plot([0 length(tau_sz_ceil(1).qb)],[0 0],'r','linewidth',2);
+                xlabel('Node (counterclockwise)');  ylabel('Shear Flow (kN/m)');
+                legend(sff(:),[n_allow_slvl(:).name 'Zero']);
+                title('Ceiling Altitude'); pos = get(sf_fig,'position');
+                set(sf_fig,'position',[pos(1:2) pos(3:4)*1.5]);
+                print(sf_fig,[pwd '/Shear_Flow_Figure/CEIL_sf'],'-djpeg','-r300');
 end
 
 if PLOT_SIGMAZZ
