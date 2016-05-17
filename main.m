@@ -3,9 +3,9 @@ close all;
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
-PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
+PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
 PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
-PLOT_SHEAR_FLOW = 1;
+PLOT_SHEAR_FLOW = 0;
 PLOT_DEFLECTION = 0;    % set 1 to plot and save all load/shear plots
 PLOT_SHEAR = 0;
 PLOT_MOMENT = 0;
