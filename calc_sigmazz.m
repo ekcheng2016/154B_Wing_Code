@@ -35,6 +35,7 @@ end
 sigma_zz.upper = sigma_zz_U;
 sigma_zz.lower = sigma_zz_L;
 
-sigma_zz.max   = max([abs(sigma_zz_U) abs(sigma_zz_L)]);
+sigma_zz.max   = max([sigma_zz_U sigma_zz_L]);
+sigma_zz.min   = min([sigma_zz_U sigma_zz_L]);
 end
 

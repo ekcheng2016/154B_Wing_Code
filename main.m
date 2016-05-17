@@ -169,9 +169,13 @@ for ii = 1:length(n_allow_slvl.n)
     end
 end
 sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
+sigma_zz_MIN_slvl_val = min([sigma_zz_slvl(1:end).min])/1e6;
 sigma_zz_MAX_slvl_ind = find([sigma_zz_slvl(1:end).max]/1e6 == sigma_zz_MAX_slvl_val);
-disp(strjoin(['Max sigma_zz at Sea Level : ' num2str(sigma_zz_MAX_slvl_val) ...
-    'MPa, occurs at : ' n_allow_slvl.name(sigma_zz_MAX_slvl_ind)]))
+sigma_zz_MIN_slvl_ind = find([sigma_zz_slvl(1:end).min]/1e6 == sigma_zz_MIN_slvl_val);
+disp(strjoin(['Max sigma_zz at Ceiling : ' num2str(sigma_zz_MAX_slvl_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MAX_slvl_ind)]))
+disp(strjoin(['Min sigma_zz at Ceiling : ' num2str(sigma_zz_MIN_slvl_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MIN_slvl_ind)]))
 tau_sz_MAX_slvl_val = max([tau_sz_slvl(1:end).max])/1e6;
 tau_sz_MAX_slvl_ind = find([tau_sz_slvl(1:end).max]/1e6 == tau_sz_MAX_slvl_val);
 disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_slvl_val) ...
@@ -403,9 +407,13 @@ for ii = 1:length(n_allow_ceil.n)
 end
 
 sigma_zz_MAX_ceil_val = max([sigma_zz_ceil(1:end).max])/1e6;
+sigma_zz_MIN_ceil_val = min([sigma_zz_ceil(1:end).min])/1e6;
 sigma_zz_MAX_ceil_ind = find([sigma_zz_ceil(1:end).max]/1e6 == sigma_zz_MAX_ceil_val);
+sigma_zz_MIN_ceil_ind = find([sigma_zz_ceil(1:end).min]/1e6 == sigma_zz_MIN_ceil_val);
 disp(strjoin(['Max sigma_zz at Ceiling : ' num2str(sigma_zz_MAX_ceil_val) ...
     'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MAX_ceil_ind)]))
+disp(strjoin(['Min sigma_zz at Ceiling : ' num2str(sigma_zz_MIN_ceil_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MIN_ceil_ind)]))
 tau_sz_MAX_ceil_val = max([tau_sz_ceil(1:end).max])/1e6;
 tau_sz_MAX_ceil_ind = find([tau_sz_ceil(1:end).max]/1e6 == tau_sz_MAX_ceil_val);
 disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_ceil_val) ...
@@ -522,7 +530,8 @@ end
 %%%%                        Buckling & Fatigue                         %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]),airf_geo.A_str,airf_geo.t_skin);
+buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]),...
+                        min([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]),airf_geo.A_str,airf_geo.t_skin);
 
 disp(strjoin(['Buckling Critical Stress: ' num2str(buckling.sigma_crit) 'MPa']));
 

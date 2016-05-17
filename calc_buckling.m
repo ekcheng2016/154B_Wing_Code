@@ -18,7 +18,7 @@
 %       
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [ buckling ] = calc_buckling( I_str, sigma_zz_max,A_str,t )
+function [ buckling ] = calc_buckling( I_str, sigma_zz_max,sigma_zz_min,A_str,t )
 
 E = 73.1*1000; % MPa
 
