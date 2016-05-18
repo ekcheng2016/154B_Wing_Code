@@ -34,4 +34,5 @@ n3      = -1;        % Negative Limit at Dive Speed
 n_PHAA  = 4.40;      % Load at PHAA
 n_NHAA  = -1.76;     % Load at NHAA
 
-sigma_yield = 324;   % Yield Strength in MPa
+rho_material = 2780;          % Material Density kg/m^3 2024 T4 Aluminum
+sigma_yield = 324;   % Yield Strength in MPa 2024 T4 Aluminum

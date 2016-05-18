@@ -3,7 +3,7 @@ close all;
 clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
-PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
+PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
 PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
 PLOT_SHEAR_FLOW = 0;
 PLOT_DEFLECTION = 0;    % set 1 to plot and save all load/shear plots
@@ -11,8 +11,9 @@ PLOT_SHEAR = 0;
 PLOT_MOMENT = 0;
 PLOT_LOADS = 0;
 PLOT_SIGMAZZ = 0;
-fid = fopen([pwd '/Shear_Flow_Figure/shear_flow_numbers.txt'],'w');
-
+if PLOT_SHEAR_FLOW
+    fid = fopen([pwd '/Shear_Flow_Figure/shear_flow_numbers.txt'],'w');
+end
 
 clrstring = 'bgkrc';
 
@@ -116,7 +117,10 @@ for ii = 1:length(n_allow_slvl.n)
             fprintf(fid,'q01 = %5.4f N/m\n',tau_sz_slvl(ii).q01);
             fprintf(fid,'q02 = %5.4f N/m\n',tau_sz_slvl(ii).q02);
             fprintf(fid,'tau_spars = %5.4f MPa, %5.4f MPa\n',tau_sz_slvl(ii).spar/1e6);
-            fprintf(fid,'Max Shear Stress = %5.4f MPa\n\n',tau_sz_slvl(ii).max/1e6);
+            fprintf(fid,'Max Shear Stress = %5.4f MPa\n',tau_sz_slvl(ii).max/1e6);
+            fprintf(fid,'Last Open Shear Flow Value = %5.4f N/m\n',tau_sz_slvl(ii).qb(end));
+            fprintf(fid,'Average Open Shear Flow Value = %5.4f N/m\n',mean(tau_sz_slvl(ii).qb));            
+            fprintf(fid,'Last Open Shear Flow/Avg Shear Flow = %5.4f %% \n\n',(tau_sz_slvl(ii).qb(end)/mean(tau_sz_slvl(ii).qb))*100);
         end
         
         % PLOT
@@ -172,9 +176,9 @@ sigma_zz_MAX_slvl_val = max([sigma_zz_slvl(1:end).max])/1e6;
 sigma_zz_MIN_slvl_val = min([sigma_zz_slvl(1:end).min])/1e6;
 sigma_zz_MAX_slvl_ind = find([sigma_zz_slvl(1:end).max]/1e6 == sigma_zz_MAX_slvl_val);
 sigma_zz_MIN_slvl_ind = find([sigma_zz_slvl(1:end).min]/1e6 == sigma_zz_MIN_slvl_val);
-disp(strjoin(['Max sigma_zz at Ceiling : ' num2str(sigma_zz_MAX_slvl_val) ...
+disp(strjoin(['Max sigma_zz at Sea Level : ' num2str(sigma_zz_MAX_slvl_val) ...
     'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MAX_slvl_ind)]))
-disp(strjoin(['Min sigma_zz at Ceiling : ' num2str(sigma_zz_MIN_slvl_val) ...
+disp(strjoin(['Min sigma_zz at Sea Level : ' num2str(sigma_zz_MIN_slvl_val) ...
     'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MIN_slvl_ind)]))
 tau_sz_MAX_slvl_val = max([tau_sz_slvl(1:end).max])/1e6;
 tau_sz_MAX_slvl_ind = find([tau_sz_slvl(1:end).max]/1e6 == tau_sz_MAX_slvl_val);
@@ -354,7 +358,10 @@ for ii = 1:length(n_allow_ceil.n)
             fprintf(fid,'q01 = %5.4f N/m\n',tau_sz_ceil(ii).q01);
             fprintf(fid,'q02 = %5.4f N/m\n',tau_sz_ceil(ii).q02);
             fprintf(fid,'tau_spars = %5.4f MPa, %5.4f MPa\n',tau_sz_ceil(ii).spar/1e6);
-            fprintf(fid,'Max Shear Stress = %5.4f MPa\n\n',tau_sz_ceil(ii).max/1e6);
+            fprintf(fid,'Max Shear Stress = %5.4f MPa\n',tau_sz_ceil(ii).max/1e6);
+            fprintf(fid,'Last Open Shear Flow Value = %5.4f N/m\n',tau_sz_ceil(ii).qb(end));
+            fprintf(fid,'Average Open Shear Flow Value = %5.4f N/m\n',mean(tau_sz_ceil(ii).qb));
+            fprintf(fid,'Last Open Shear Flow/Avg Shear Flow = %5.4f %% \n\n',(tau_sz_ceil(ii).qb(end)/mean(tau_sz_ceil(ii).qb))*100);
         end
         
         if PLOT_SHEAR
@@ -416,7 +423,7 @@ disp(strjoin(['Min sigma_zz at Ceiling : ' num2str(sigma_zz_MIN_ceil_val) ...
     'MPa, occurs at : ' n_allow_ceil.name(sigma_zz_MIN_ceil_ind)]))
 tau_sz_MAX_ceil_val = max([tau_sz_ceil(1:end).max])/1e6;
 tau_sz_MAX_ceil_ind = find([tau_sz_ceil(1:end).max]/1e6 == tau_sz_MAX_ceil_val);
-disp(strjoin(['Max tau_sz at Sea Level : ' num2str(tau_sz_MAX_ceil_val) ...
+disp(strjoin(['Max tau_sz at Ceiling : ' num2str(tau_sz_MAX_ceil_val) ...
     'MPa, occurs at : ' n_allow_slvl.name(tau_sz_MAX_ceil_ind)]))
 
 if PLOT_LOADS
@@ -535,7 +542,7 @@ buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]
 
 disp(strjoin(['Buckling Critical Stress: ' num2str(buckling.sigma_crit) 'MPa']));
 
-if max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]) >= buckling.sigma_crit
+if max(abs([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val])) >= buckling.sigma_crit
    disp('WING WILL BUCKLE');
 else
     disp('WING WILL NOT BUCKLE!');
@@ -556,3 +563,13 @@ if (sigma_eq.val/1e6)*1.5 >= sigma_yield
 else
     disp('WING WILL NOT FAIL UNDER VON MISES STRESS CRITERIA!');
 end
+
+%%% ADD IF ELSE STATEMENT HERE FOR YIELD AND BUCKLING FIRST (BEFORE
+%%% CALCULATING WEIGHT)
+weight_wing = calc_weight_wing(airf_geo,b,rho_material);
+
+disp(strjoin(['Based on the current configuration, the wing weighs : ' ...
+             num2str(weight_wing.total) 'kg']));
+disp(strjoin(['The wing weighs ' num2str(100*weight_wing.total/(wgt_emp/g)) ...
+              '% of the entire aircraft.']));
+
