@@ -23,15 +23,15 @@ function [ buckling ] = calc_buckling( I_str, sigma_zz_max,sigma_zz_min,A_str,t 
 E = 73.1*1000; % MPa
 
 %% Column Buckling
-P_max = 1.5*sigma_zz_max*A_str; % max loading of the wing section
+P_max = 1.5*abs(sigma_zz_min)*A_str; % max loading of the wing section
 l_e = sqrt(pi^2*E*I_str/P_max); % effective length of the spacing 
 l = 2*l_e; % rib spacing 
 
 %% Skin Buckling
 mu = 0.33; % possoin's ratio
 k = 8.5; % from the chart in class 8-9
-b = 0.5; % TODO: ARBITRARY PICK. 
-sigma_crit = k*pi^2*E/(12*(1-mu^2))*(t/b)^2; % critical stress for skin buckling
+b = 0.20; % TODO: ARBITRARY PICK. VALUE BETWEEN STRINGER
+sigma_crit = (k*pi^2*E/(12*(1-mu^2)))*(t/b)^2; % critical stress for skin buckling
 
 %% Yield & Fatigue
 
