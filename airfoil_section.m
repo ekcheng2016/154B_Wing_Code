@@ -32,7 +32,7 @@
 %   i_spar:     spar indices                                   (-)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [Cx,Cy,Ixx,Iyy,Ixy,I_str,airf_geo] = ...
-    airfoil_section(c,airf_geo,PLOT_AIRFOIL)
+    airfoil_section(c,airf_geo)
 % dereference airfoil geometry structure
 A_cap = airf_geo.A_cap;
 A_str = airf_geo.A_str;
@@ -239,23 +239,6 @@ end
 Cx = Cx_sum/A_sum;
 Cy = Cy_sum/A_sum;
 
-if PLOT_AIRFOIL
-    afc = figure();
-    plot(x,yU,'k',x,yL,'k','Linewidth',2);
-    ylim([-0.3 0.3])
-    hold on; grid on;
-    plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
-    for i = 1:length(x_spar)
-        plot([x_spar(i),x_spar(i)],[yU(i_spar(i)),yL(i_spar(i))],'b','Linewidth',3)
-    end
-    plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
-    scatter(Cx,Cy,'m*')
-    title('NACA 2415 with Origin at Nose','fontsize',14);
-    ylabel('y (m)')
-    xlabel('x (m)')
-    print(afc,[pwd '/Airfoil_Section/REAL_Airfoil_Origin'],'-djpeg','-r300');
-end
-
 %% Area moments of inertia
 Ixx = 0;
 Iyy = 0;
@@ -339,21 +322,5 @@ airf_geo.L_boomL = L_skinL;    % length between each lower surface boom
 airf_geo.h_spar  = h_spar;     % height of each spar
 airf_geo.i_spar  = i_spar;     % index of each spar
 airf_geo.dx      = dx;         % change in x (m)
-
-if PLOT_AIRFOIL
-    afc = figure();
-    plot(x,yU,'k',x,yL,'k','Linewidth',2);
-    hold on; grid on;
-  %  plot(x,yU,'xb',x,yL,'xb');
-    ylim([-0.3 0.3])
-    plot(x_strU,yU(i_strU),'or',x_strL,yL(i_strL),'or','markersize',5);
-    for i = 1:length(x_spar)
-        plot([x_spar(i),x_spar(i)],[yU(i_spar(i)),yL(i_spar(i))],'b','Linewidth',3)
-    end
-    plot(x_spar,yU(i_spar),'sg',x_spar,yL(i_spar),'sg','markersize',6);
-    scatter(Cx-Cx,Cy-Cy,'m*')
-    title('NACA 2415 Normalized to Centroid','fontsize',14);
-    ylabel('y (m)')
-    xlabel('x (m)')
-    print(afc,[pwd '/Airfoil_Section/REAL_Airfoil_Centroid'],'-djpeg','-r300');
-end
+airf_geo.i_strU  = i_strU;
+airf_geo.i_strL  = i_strL;

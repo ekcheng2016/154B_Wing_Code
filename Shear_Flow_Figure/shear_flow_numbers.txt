@@ -1,4 +1,4 @@
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:                 PHAA
 q01 = 84962.1416 N/m
 q02 = 18629.6853 N/m
@@ -8,7 +8,7 @@ Last Open Shear Flow Value = 903.0053 N/m
 Average Open Shear Flow Value = -59117.4553 N/m
 Last Open Shear Flow/Avg Shear Flow = -1.5275 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:                 PLAA
 q01 = 67693.0098 N/m
 q02 = 1397.2593 N/m
@@ -18,7 +18,7 @@ Last Open Shear Flow Value = 527.0886 N/m
 Average Open Shear Flow Value = -60229.9599 N/m
 Last Open Shear Flow/Avg Shear Flow = -0.8751 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:                 NHAA
 q01 = -35317.9957 N/m
 q02 = -13985.5993 N/m
@@ -28,7 +28,7 @@ Last Open Shear Flow Value = 8.1542 N/m
 Average Open Shear Flow Value = 23703.6729 N/m
 Last Open Shear Flow/Avg Shear Flow = 0.0344 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition: V_{cruise} Gust Load
 q01 = -40897.4471 N/m
 q02 = -17240.4520 N/m
@@ -38,7 +38,7 @@ Last Open Shear Flow Value = -112.4944 N/m
 Average Open Shear Flow Value = 25258.8409 N/m
 Last Open Shear Flow/Avg Shear Flow = -0.4454 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:   V_{dive} Gust Load
 q01 = -36573.7302 N/m
 q02 = -23760.9205 N/m
@@ -47,52 +47,4 @@ Max Shear Stress = 23.5035 MPa
 Last Open Shear Flow Value = -118.6165 N/m
 Average Open Shear Flow Value = 15580.2351 N/m
 Last Open Shear Flow/Avg Shear Flow = -0.7613 % 
-
-Flight Condition: Ceiling
-Loading Condition:                 PHAA
-q01 = 84913.2787 N/m
-q02 = 18757.6548 N/m
-tau_spars = 26.4622 MPa, 7.5031 MPa
-Max Shear Stress = 38.6403 MPa
-Last Open Shear Flow Value = 885.9042 N/m
-Average Open Shear Flow Value = -59161.9291 N/m
-Last Open Shear Flow/Avg Shear Flow = -1.4974 % 
-
-Flight Condition: Ceiling
-Loading Condition:                 PLAA
-q01 = 74769.7676 N/m
-q02 = 8901.6623 N/m
-tau_spars = 26.3472 MPa, 3.5607 MPa
-Max Shear Stress = 50.4537 MPa
-Last Open Shear Flow Value = 620.6255 N/m
-Average Open Shear Flow Value = -60088.8133 N/m
-Last Open SheLast OpenLast Open Shear Flow/Avg Shear Flow = -0.4963 Ceiling
-Loading Condition:                 NHAA
-q01 = -35657.5002 N/m
-q02 = -14193.9995 N/m
-tau_spars = -8.5854 MPa, -5.6776 MPa
-Max Shear Stress = 13.9713 MPa
-Last Open Shear Flow Value = -0.8870 N/m
-Average Open Shear Flow Value = 23772.8721 N/m
-Last Open Shear Flow/Avg Shear Flow = -0.0037 % 
-
-Flight Condition: Ceiling
-Loading Condition: V_{cruise} Gust Load
-q01 = -43943.5548 N/m
-q02 = -17002.9355 N/m
-tau_spars = -10.7762 MPa, -6.8012 MPa
-Max Shear Stress = 16.7961 MPa
-Last Open Shear Flow Value = -61.8833 N/m
-Average Open Shear Flow Value = 29029.4043 N/m
-Last Open Shear Flow/Avg Shear Flow = -0.2132 % 
-
-Flight Condition: Ceiling
-Loading Condition:   V_{dive} Gust Load
-q01 = -35048.4889 N/m
-q02 = -18300.8328 N/m
-tau_spars = -6.6991 MPa, -7.3203 MPa
-Max Shear Stress = 18.1032 MPa
-Last Open Shear Flow Value = -92.0381 N/m
-Average Open Shear Flow Value = 18545.5153 N/m
-Last Open Shear Flow/Avg Shear Flow = -0.4963 % 
 

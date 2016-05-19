@@ -145,16 +145,16 @@ yB_total = [fliplr(y_boomU), y_boomL(2:end)];
 LB_total = [fliplr(L_boomU), L_boomL, h_spar(2)];
 
 if COUNT == 1
-figure()
-plot(xB_total,yB_total,'ro','markersize',6);
-hold on
-plot(x,yU,'k',x,yL,'k','linewidth',1.5);
-plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
-ylim([-0.3 0.3]) 
-xlabel('x (m)')
-ylabel('y (m)')
-title('Boom Distribution')
-grid on
+% figure()
+% plot(xB_total,yB_total,'ro','markersize',6);
+% hold on
+% plot(x,yU,'k',x,yL,'k','linewidth',1.5);
+% plot([x(end), x(end)],[y_boomU(end),y_boomL(end)],'b',[x_sparU_align(1),x_sparL_align(1)],[y_boomU(ind_capU(1)),y_boomL(ind_capL(1))],'b','linewidth',2)
+% ylim([-0.3 0.3]) 
+% xlabel('x (m)')
+% ylabel('y (m)')
+% title('Boom Distribution')
+% grid on
 end
 % for i = 1:2
 %     BU(i_BsparU(i)) = BU(i_BsparU(i)) + t_spar*h_spar(i)/6*(2+sz_RBL(i_BsparL(i))/sz_RBU(i_BsparU(i)));
