@@ -46,7 +46,7 @@ airf_geo.x_strU0 = [0 0.05 0.15 0.35 0.55 0.65]*c; % upper surface
 airf_geo.x_strL0 = [0 0.05 0.15 0.35 0.55 0.65]*c; % lower surface
 % % new coordinate with origin at the centroid is used for the output below
 [Cx,Cy,Ixx,Iyy,Ixy,I_str,airf_geo] = ...
-    airfoil_section(c,airf_geo,PLOT_AIRFOIL);
+    airfoil_section(c,airf_geo);
                         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%           LOAD DISTRIBUTIONS @ SEA LEVEL (all critical pts)         %%%
