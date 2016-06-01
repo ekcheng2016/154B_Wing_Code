@@ -19,7 +19,24 @@
 %       
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [ buckling ] = calc_buckling( I_str, sigma_zz_max,sigma_zz_min,A_str,t )
+function [ buckling ] = calc_buckling( I_str, sigma_zz_max,sigma_zz_min,A_str,t , airf_geo)
+
+% dereference
+i_strU = airf_geo.i_strU;
+i_strL = airf_geo.i_strL;
+i_spar = airf_geo.i_spar;
+
+i_U = sort([i_strU i_spar]);
+i_L = sort([i_strL i_spar]);
+
+x = airf_geo.x;
+y_U = airf_geo.yU;
+y_L = airf_geo.yL;
+
+b_upper = sqrt((y_U(i_U(2:end))-y_U(i_U(1:end-1))).^2 + (x(i_U(2:end))-x(i_U(1:end-1))).^2);
+b_lower = sqrt((y_L(i_L(2:end))-y_L(i_L(1:end-1))).^2 + (x(i_L(2:end))-x(i_L(1:end-1))).^2);
+
+b = sort([b_upper b_lower]);
 
 E = 73.1*1000; % GPa
 
@@ -31,8 +48,8 @@ rib_l = 2*l_e; % rib spacing
 %% Skin Buckling
 mu = 0.33; % possoin's ratio
 k = 8.5; % from the chart in class 8-9
-b = 0.20; % TODO: ARBITRARY PICK. VALUE BETWEEN STRINGER
-sigma_crit = (k*pi^2*E/(12*(1-mu^2)))*(t/b)^2; % critical stress for skin buckling
+% b = 0.20; % TODO: ARBITRARY PICK. VALUE BETWEEN STRINGER
+sigma_crit = (k*pi^2*E/(12*(1-mu^2))).*(t./b).^2; % critical stress for skin buckling
 
 %% Yield & Fatigue
 %
@@ -51,4 +68,4 @@ n = 2/(c*(m-2)*((sigma_zz_max-sigma_zz_min)*pi^0.5)^m)*...
 buckling.rib_l = rib_l; % rib spacing in m
 buckling.n = n; % cycles to fatigue in # of cycles
 buckling.a_crit = a_crit; % critical crack length in m
-buckling.sigma_crit = sigma_crit; % critical stress in GPa
+buckling.sigma_crit = min(sigma_crit); % critical stress in GPa

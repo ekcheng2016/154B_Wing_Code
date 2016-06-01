@@ -538,11 +538,11 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]),...
-                        min([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]),airf_geo.A_str,airf_geo.t_skin);
+                        min([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]),airf_geo.A_str,airf_geo.t_skin, airf_geo);
 
 disp(strjoin(['Buckling Critical Stress: ' num2str(buckling.sigma_crit) 'MPa']));
 
-if max(abs([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val])) >= buckling.sigma_crit
+if (1.5*max(abs([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]))) >= buckling.sigma_crit
    disp('WING WILL BUCKLE');
 else
     disp('WING WILL NOT BUCKLE!');
