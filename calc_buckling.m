@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ buckling ] = calc_buckling( I_str, sigma_zz_max,sigma_zz_min,A_str,t )
 
-E = 73.1*10^9; % GPa
+E = 73.1*1000; % GPa
 
 %% Column Buckling
 P_max = 1.5*abs(sigma_zz_min)*A_str; % max loading of the wing section
