@@ -6,7 +6,7 @@
 function [ sigma_eq ] = von_mises( sigma_zz_slvl,sigma_zz_ceil,tau_sz_slvl,tau_sz_ceil )
 
 %  AT SEA LEVEL
-sigma_eq_temp = sqrt((2*sigma_zz_slvl.^2) + (6*tau_sz_slvl.^2));
+sigma_eq_temp = sqrt((sigma_zz_slvl.^2) + (3*tau_sz_slvl.^2));
 sigma_eq_slvl_val = max(sigma_eq_temp);
 sigma_eq_slvl_ind = find(sigma_eq_temp == sigma_eq_slvl_val);
 
