@@ -38,7 +38,7 @@ b_lower = sqrt((y_L(i_L(2:end))-y_L(i_L(1:end-1))).^2 + (x(i_L(2:end))-x(i_L(1:e
 
 b = sort([b_upper b_lower]);
 
-E = 73.1*1000; % GPa
+E = 73.1*1000; % MPa
 
 %% Column Buckling
 P_max = 1.5*abs(sigma_zz_min)*A_str; % max loading of the wing section
@@ -68,4 +68,4 @@ n = 2/(c*(m-2)*((sigma_zz_max-sigma_zz_min)*pi^0.5)^m)*...
 buckling.rib_l = rib_l; % rib spacing in m
 buckling.n = n; % cycles to fatigue in # of cycles
 buckling.a_crit = a_crit; % critical crack length in m
-buckling.sigma_crit = min(sigma_crit); % critical stress in GPa
+buckling.sigma_crit = min(sigma_crit); % critical stress in MPa

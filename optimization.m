@@ -45,7 +45,7 @@ airf_geo = base_wing;
 [Cx,Cy,Ixx,Iyy,Ixy,I_str,airf_geo] = airfoil_section(c,airf_geo);
 
 disp('Begin Monte Carlo Optimization Process.');
-BASE_WING_WGT = 240;
+BASE_WING_WGT = 420;
 NUM_SUCCESS = 0;
 for kk = 1:N_ITERATIONS
 
@@ -147,9 +147,8 @@ buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]
 sigma_eq = von_mises([sigma_zz_slvl(:).max],[sigma_zz_ceil(:).max],...
                     [tau_sz_slvl(:).max],[tau_sz_ceil(:).max]);
 
-%%% ADD IF ELSE STATEMENT HERE FOR BUCKLING FIRST (BEFORE
-%%% CALCULATING WEIGHT)
-if (sigma_eq.val/1e6)*1.5 >= sigma_yield
+if (((sigma_eq.val/1e6)*1.5 >= sigma_yield) && ...
+   ((1.5*max(abs([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]))) >= buckling.sigma_crit))
     calc_random_wing;
     fields = {'x','xU','y_skinU','yU','xL','y_skinL','yL','L_skinU',...
           'L_skinL','x_strU','x_strL','x_spar','L_boomU','L_boomL','h_spar',...
