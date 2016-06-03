@@ -1,4 +1,4 @@
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:                 PHAA
 q01 = 67130.3285 N/m
 q02 = 27243.4010 N/m
@@ -8,7 +8,7 @@ Last Open Shear Flow Value = 2086.3038 N/m
 Average Open Shear Flow Value = -57771.4131 N/m
 Last Open Shear Flow/Avg Shear Flow = -3.6113 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:                 PLAA
 q01 = 49447.1309 N/m
 q02 = 10687.7715 N/m
@@ -18,7 +18,7 @@ Last Open Shear Flow Value = 1052.3196 N/m
 Average Open Shear Flow Value = -59135.9383 N/m
 Last Open Shear Flow/Avg Shear Flow = -1.7795 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:                 NHAA
 q01 = -27454.7729 N/m
 q02 = -18209.0752 N/m
@@ -28,7 +28,7 @@ Last Open Shear Flow Value = 167.5230 N/m
 Average Open Shear Flow Value = 23421.3629 N/m
 Last Open Shear Flow/Avg Shear Flow = 0.7153 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition: V_{cruise} Gust Load
 q01 = -32628.5484 N/m
 q02 = -21547.4948 N/m
@@ -38,7 +38,7 @@ Last Open Shear Flow Value = -147.5178 N/m
 Average Open Shear Flow Value = 24875.0883 N/m
 Last Open Shear Flow/Avg Shear Flow = -0.5930 % 
 
-Flight Condition: Sea Level
+Flight Condition:Sea Level
 Loading Condition:   V_{dive} Gust Load
 q01 = -31182.4858 N/m
 q02 = -26493.3544 N/m
@@ -48,7 +48,7 @@ Last Open Shear Flow Value = -221.3694 N/m
 Average Open Shear Flow Value = 15310.6552 N/m
 Last Open Shear Flow/Avg Shear Flow = -1.4459 % 
 
-Flight Condition: Ceiling
+Flight Condition:Ceiling Altitude
 Loading Condition:                 PHAA
 q01 = 67038.0976 N/m
 q02 = 27413.7739 N/m
@@ -58,7 +58,7 @@ Last Open Shear Flow Value = 2038.4012 N/m
 Average Open Shear Flow Value = -57827.7735 N/m
 Last Open Shear Flow/Avg Shear Flow = -3.5250 % 
 
-Flight Condition: Ceiling
+Flight Condition:Ceiling Altitude
 Loading Condition:                 PLAA
 q01 = 56498.5669 N/m
 q02 = 18088.9478 N/m
@@ -68,7 +68,7 @@ Last Open Shear Flow Value = 1305.1004 N/m
 Average Open Shear Flow Value = -58932.2316 N/m
 Last Open Shear Flow/Avg Shear Flow = -2.2146 % 
 
-Flight Condition: Ceiling
+Flight Condition:Ceiling Altitude
 Loading Condition:                 NHAA
 q01 = -27779.1120 N/m
 q02 = -18415.5645 N/m
@@ -78,7 +78,7 @@ Last Open Shear Flow Value = 143.7216 N/m
 Average Open Shear Flow Value = 23483.5438 N/m
 Last Open Shear Flow/Avg Shear Flow = 0.6120 % 
 
-Flight Condition: Ceiling
+Flight Condition:Ceiling Altitude
 Loading Condition: V_{cruise} Gust Load
 q01 = -34420.3029 N/m
 q02 = -22041.5421 N/m
@@ -88,7 +88,7 @@ Last Open Shear Flow Value = 11.5183 N/m
 Average Open Shear Flow Value = 28634.3819 N/m
 Last Open Shear Flow/Avg Shear Flow = 0.0402 % 
 
-Flight Condition: Ceiling
+Flight Condition:Ceiling Altitude
 Loading Condition:   V_{dive} Gust Load
 q01 = -28842.2152 N/m
 q02 = -21465.1139 N/m
@@ -98,4 +98,17 @@ Last Open Shear Flow Value = -196.4072 N/m
 Average Open Shear Flow Value = 18229.6946 N/m
 Last Open Shear Flow/Avg Shear Flow = -1.0774 % 
 
-Based on the current configuration, the wing weighs : 419.8297kgThe wing weight 61.7397Von Mises Equivalent Stress : ,63.7249,MPa, occurs at : ,PLAA,, Flight Condition: ,SlvlBuckling Critical Stress: 91.6031MPaMax sigma_zz at Ceiling : ,53.9852,MPa, occurs at : ,PLAAMin sigma_zz at Ceiling : ,-59.596,MPa, occurs at : ,PLAAMax tau_sz at Ceiling : ,17.3277,MPa, occurs at : ,PLAAMax sigma_zz at Sea Level : ,54.2919,MPa, occurs at : ,PLAAMin sigma_zz at Sea Level : ,-59.5415,MPa, occurs at : ,PLAAMax tau_sz at Sea Level : ,19.2636,MPa, occurs at : ,PLAA
+
+Max sigma_zz at Sea Level : ,54.2919,MPa, occurs at : ,PLAA
+Min sigma_zz at Sea Level : ,-59.5415,MPa, occurs at : ,PLAA
+Max tau_sz at Sea Level : ,19.2636,MPa, occurs at : ,PLAA,
+
+Max sigma_zz at Ceiling : ,53.9852,MPa, occurs at : ,PLAA
+Min sigma_zz at Ceiling : ,-59.596,MPa, occurs at : ,PLAA
+Max tau_sz at Ceiling : ,17.3277,MPa, occurs at : ,PLAA,
+
+Buckling Critical Stress: 91.6031MPa 
+
+Von Mises Equivalent Stress : ,63.7249,MPa, occurs at : ,PLAA,, Flight Condition: ,Slvl,
+
+Based on the current configuration, the wing weighs : 419.8297kg

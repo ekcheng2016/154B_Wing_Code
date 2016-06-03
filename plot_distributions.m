@@ -22,7 +22,7 @@
 function [] = plot_distributions(fgt_cond,fid,b,c,Cx,airf_geo,n_allow,shear,moment,deflection,sigmazz,tausz)
 
 clrstring = 'bgkrc';
-if fgt_cond == 'Sea Level'
+if strcmp(fgt_cond,'Sea Level')
     fignum = 100;
     savekey = 'SLVL';
 else
@@ -94,49 +94,49 @@ figure(fignum+6);    xlabel('Span (m)');     ylabel('S_x Distribution (kN)');
                      legend(sxf(:),n_allow(:).name);    xlim([-b/2 b/2]);
                      title(fgt_cond); pos = get(sx_fig,'position');
                      set(sx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                     print(sx_fig,[pwd '/Load_Distribution_Figures/' savekey '_Sx'],'-djpeg','-r300');
+                     print(sx_fig,[pwd '/Optimized/Load_Distribution_Figures/' savekey '_Sx'],'-djpeg','-r300');
                 
 figure(fignum+7);    xlabel('Span (m)');     ylabel('S_y Distribution (kN)');
                      legend(syf(:),n_allow(:).name);    xlim([-b/2 b/2]);
                      title(fgt_cond); pos = get(sy_fig,'position');
                      set(sy_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                     print(sy_fig,[pwd '/Load_Distribution_Figures/' savekey '_Sy'],'-djpeg','-r300');
+                     print(sy_fig,[pwd '/Optimized/Load_Distribution_Figures/' savekey '_Sy'],'-djpeg','-r300');
 
 figure(fignum+8);    xlabel('Span (m)');     ylabel('M_x Distribution (kNm)');
                      legend(mxf(:),n_allow(:).name);    xlim([-b/2 b/2]);
                      title(fgt_cond); pos = get(mx_fig,'position');
                      set(mx_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                     print(mx_fig,[pwd '/Load_Distribution_Figures/' savekey '_Mx'],'-djpeg','-r300');
+                     print(mx_fig,[pwd '/Optimized/Load_Distribution_Figures/' savekey '_Mx'],'-djpeg','-r300');
                 
 figure(fignum+9);    xlabel('Span (m)');     ylabel('M_y Distribution (kNm)');
                      legend(myf(:),n_allow(:).name);    xlim([-b/2 b/2]);
                      title(fgt_cond); pos = get(my_fig,'position');
                      set(my_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                     print(my_fig,[pwd '/Load_Distribution_Figures/' savekey '_My'],'-djpeg','-r300');
+                     print(my_fig,[pwd '/Optimized/Load_Distribution_Figures/' savekey '_My'],'-djpeg','-r300');
 
 figure(fignum+10);    xlabel('Span (m)');     ylabel('u deflection (mm)');
                       legend(uf(:),n_allow(:).name);    xlim([-b/2 b/2]);
                       title(fgt_cond); pos = get(u_fig,'position');
                       set(u_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                      print(u_fig,[pwd '/Deflection_Figures/' savekey '_u'],'-djpeg','-r300');
+                      print(u_fig,[pwd '/Optimized/Deflection_Figures/' savekey '_u'],'-djpeg','-r300');
                 
 figure(fignum+11);    xlabel('Span (m)');     ylabel('v deflection (mm)');
                       legend(vf(:),n_allow(:).name);    xlim([-b/2 b/2]);
                       title(fgt_cond); pos = get(v_fig,'position');
                       set(v_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                      print(v_fig,[pwd '/Deflection_Figures/' savekey '_v'],'-djpeg','-r300');                
+                      print(v_fig,[pwd '/Optimized/Deflection_Figures/' savekey '_v'],'-djpeg','-r300');                
 
 figure(fignum+13);    sff(end+1) = plot([0 length(tausz(1).qb)],[0 0],'r','linewidth',2);
                       xlabel('Node (counterclockwise)');  ylabel('Shear Flow (kN/m)');
                       legend(sff(:),[n_allow(:).name 'Zero']);
                       title(fgt_cond); pos = get(sf_fig,'position');
                       set(sf_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                      print(sf_fig,[pwd '/Shear_Flow_Figure/' savekey '_sf_open'],'-djpeg','-r300');
+                      print(sf_fig,[pwd '/Optimized/Shear_Flow_Figure/' savekey '_sf_open'],'-djpeg','-r300');
 figure(fignum+14);    xlabel('Node (counterclockwise)');  ylabel('Shear Force (\tau_{sz}) (MPa)');
                       legend(tauf(:),n_allow(:).name);
                       title(fgt_cond); pos = get(tau_fig,'position');
                       set(tau_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-                      print(tau_fig,[pwd '/Shear_Flow_Figure/' savekey '_tau_sz'],'-djpeg','-r300');
+                      print(tau_fig,[pwd '/Optimized/Shear_Flow_Figure/' savekey '_tau_sz'],'-djpeg','-r300');
 
 sigmazz_fig = figure(fignum+12);
 hold on; box on; grid on;
@@ -146,6 +146,6 @@ xlabel('Chord (m)');    ylabel('Direct Stress (\sigma_{zz}) (MPa)');
 legend('Upper Surface','Lower Surface');    xlim([0-Cx c-Cx]);
 title(fgt_cond); pos = get(sigmazz_fig,'position');
 set(sigmazz_fig,'position',[pos(1:2) pos(3:4)*1.5]);
-print(sigmazz_fig,[pwd '/Stress_Figure/' savekey '_DirectStress'],'-djpeg','-r300');
+print(sigmazz_fig,[pwd '/Optimized/Stress_Figure/' savekey '_DirectStress'],'-djpeg','-r300');
 end
                 

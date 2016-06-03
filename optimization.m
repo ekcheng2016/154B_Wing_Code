@@ -5,15 +5,15 @@ close all;
 clc;
 
 % NUMBER OF MONTE CARLO ITERATIONS
-N_ITERATIONS = 40;
+N_ITERATIONS = 1;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
-PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
+PLOT_AIRFOIL = 1;     % set 1 to plot and save airfoil section plots
 PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
 PLOT_LOADS = 0;
-PLOT_DISTRIBUTION = 0;
+PLOT_DISTRIBUTION = 1;
 if PLOT_DISTRIBUTION
-    fid = fopen([pwd '/Shear_Flow_Figure/shear_flow_numbers.txt'],'w');
+    fid = fopen([pwd '/Optimized/Shear_Flow_Figure/shear_flow_numbers.txt'],'w');
 end
 
 load_aircraft_parameters;
@@ -138,7 +138,7 @@ tau_sz_MAX_ceil_ind = find([tau_sz_ceil(1:end).max]/1e6 == tau_sz_MAX_ceil_val);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 buckling = calc_buckling(I_str,max([sigma_zz_MAX_ceil_val sigma_zz_MAX_slvl_val]),...
-                        min([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]),airf_geo.A_str,airf_geo.t_skin);
+                        min([sigma_zz_MIN_ceil_val sigma_zz_MIN_slvl_val]),airf_geo.A_str,airf_geo.t_skin,airf_geo);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                        Von Mises Failure                          %%%%
@@ -232,9 +232,43 @@ disp(strjoin(['The wing weight ' num2str(100*WING_SUCCESS(ind).weight_wing.total
 plot_airfoil(WING_SUCCESS(ind).airf_geo,WING_SUCCESS(ind).Cx,WING_SUCCESS(ind).Cy);
 
 if PLOT_DISTRIBUTION
-plot_distributions('Sea Level',fid,b,c,Cx,airf_geo,n_allow_slvl,shear_slvl,moment_slvl,...
-    deflection_slvl,sigma_zz_slvl(sigma_zz_MAX_slvl_ind),tau_sz_slvl);
+plot_distributions('Sea Level',fid,b,c,WING_SUCCESS(ind).Cx,WING_SUCCESS(ind).airf_geo,n_allow_slvl,WING_SUCCESS(ind).shear_slvl,WING_SUCCESS(ind).moment_slvl,...
+    WING_SUCCESS(ind).deflection_slvl,WING_SUCCESS(ind).sigma_zz_slvl(sigma_zz_MAX_slvl_ind),WING_SUCCESS(ind).tau_sz_slvl);
 
-plot_distributions('Ceiling Altitude',fid,b,c,Cx,airf_geo,n_allow_ceil,shear_ceil,moment_ceil,...
-    deflection_ceil,sigma_zz_ceil(sigma_zz_MAX_ceil_ind),tau_sz_ceil);
+plot_distributions('Ceiling Altitude',fid,b,c,WING_SUCCESS(ind).Cx,WING_SUCCESS(ind).airf_geo,n_allow_ceil,WING_SUCCESS(ind).shear_ceil,WING_SUCCESS(ind).moment_ceil,...
+    WING_SUCCESS(ind).deflection_ceil,WING_SUCCESS(ind).sigma_zz_ceil(sigma_zz_MAX_ceil_ind),WING_SUCCESS(ind).tau_sz_ceil);
 end
+
+fprintf(fid,'\n');
+fprintf(fid,strjoin(['Max sigma_zz at Sea Level : ' num2str(WING_SUCCESS(ind).sigma_zz_MAX_slvl_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(WING_SUCCESS(ind).sigma_zz_MAX_slvl_ind)]));
+fprintf(fid,'\n');
+fprintf(fid,strjoin(['Min sigma_zz at Sea Level : ' num2str(WING_SUCCESS(ind).sigma_zz_MIN_slvl_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(WING_SUCCESS(ind).sigma_zz_MIN_slvl_ind)]));
+fprintf(fid,'\n');
+fprintf(fid,sprintf(strjoin(['Max tau_sz at Sea Level : ' num2str(WING_SUCCESS(ind).tau_sz_MAX_slvl_val) ...
+    'MPa, occurs at : ' n_allow_slvl.name(WING_SUCCESS(ind).tau_sz_MAX_slvl_ind) '\n'])));
+
+fprintf(fid,'\n');
+fprintf(fid,strjoin(['Max sigma_zz at Ceiling : ' num2str(WING_SUCCESS(ind).sigma_zz_MAX_ceil_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(WING_SUCCESS(ind).sigma_zz_MAX_ceil_ind)]));
+fprintf(fid,'\n');
+fprintf(fid,strjoin(['Min sigma_zz at Ceiling : ' num2str(WING_SUCCESS(ind).sigma_zz_MIN_ceil_val) ...
+    'MPa, occurs at : ' n_allow_ceil.name(WING_SUCCESS(ind).sigma_zz_MIN_ceil_ind)]));
+fprintf(fid,'\n');
+fprintf(fid,sprintf(strjoin(['Max tau_sz at Ceiling : ' num2str(WING_SUCCESS(ind).tau_sz_MAX_ceil_val) ...
+    'MPa, occurs at : ' n_allow_slvl.name(WING_SUCCESS(ind).tau_sz_MAX_ceil_ind) '\n'])));
+
+fprintf(fid,'\n');
+fprintf(fid,sprintf(strjoin(['Buckling Critical Stress: ' num2str(WING_SUCCESS(ind).buckling.sigma_crit) 'MPa \n'])));
+
+fprintf(fid,'\n');
+fprintf(fid,sprintf(strjoin(['Von Mises Equivalent Stress : ' num2str(WING_SUCCESS(ind).sigma_eq.val/1e6) ...
+    'MPa, occurs at : ' n_allow_slvl.name(WING_SUCCESS(ind).sigma_eq.ind) ', Flight Condition: ' sigma_eq.fgt_cond '\n'])));
+                
+fprintf(fid,'\n');
+fprintf(fid,strjoin(['Based on the current configuration, the wing weighs : ' ...
+             num2str(WING_SUCCESS(ind).weight_wing.total) 'kg']));
+fprintf(fid,'\n');
+fprintf(fid,strjoin(['The wing weight ' num2str(100*WING_SUCCESS(ind).weight_wing.total/(mass_emp)) ...
+              '% of the entire aircraft empty weight.']));

@@ -4,13 +4,13 @@ clc;
 
 PLOT_FLTENVELOPE = 0; % set 1 to plot and save flight envelope plots
 PLOT_AIRFOIL = 0;     % set 1 to plot and save airfoil section plots
-PLOT_LIFTCURVE = 0;   % set 1 to plot and save lift curve slope plot
-PLOT_SHEAR_FLOW = 0;
-PLOT_DEFLECTION = 0;    % set 1 to plot and save all load/shear plots
-PLOT_SHEAR = 0;
-PLOT_MOMENT = 0;
-PLOT_LOADS = 0;
-PLOT_SIGMAZZ = 0;
+PLOT_LIFTCURVE = 1;   % set 1 to plot and save lift curve slope plot
+PLOT_SHEAR_FLOW = 1;
+PLOT_DEFLECTION = 1;    % set 1 to plot and save all load/shear plots
+PLOT_SHEAR = 1;
+PLOT_MOMENT = 1;
+PLOT_LOADS = 1;
+PLOT_SIGMAZZ = 1;
 if PLOT_SHEAR_FLOW
     fid = fopen([pwd '/Shear_Flow_Figure/shear_flow_numbers.txt'],'w');
 end
